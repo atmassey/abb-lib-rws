@@ -116,3 +116,38 @@ type UserResourcesSpan struct {
 	Class string `xml:"class,attr"`
 	Text  string `xml:",chardata"`
 }
+
+type FileResources struct {
+	XMLName xml.Name        `xml:"html"`
+	Body    FileServiceBody `xml:"body"`
+}
+
+type FileServiceBody struct {
+	Div FileServiceDiv `xml:"div"`
+}
+
+type FileServiceDiv struct {
+	Class string          `xml:"class,attr"`
+	Lists []FileServiceLi `xml:"ul>li"`
+}
+
+type FileServiceLi struct {
+	Class      string           `xml:"class,attr"`
+	Title      string           `xml:"title,attr"`
+	ParentLink *FileServiceLink `xml:"a"`
+	SelfLink   *FileServiceLink `xml:"a"`
+	DeviceType FileServiceSpan  `xml:"span[class='fs-device-type']"`
+	FreeSpace  FileServiceSpan  `xml:"span[class='fs-free-space']"`
+	TotalSpace FileServiceSpan  `xml:"span[class='fs-total-space']"`
+	Enabled    FileServiceSpan  `xml:"span[class='fs-enabled']"`
+	ReadOnly   FileServiceSpan  `xml:"span[class='fs-readonly']"`
+}
+
+type FileServiceLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+}
+
+type FileServiceSpan struct {
+	Text string `xml:",chardata"`
+}
