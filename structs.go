@@ -74,3 +74,45 @@ type ControllerResourcesSpan struct {
 	Class string `xml:"class,attr"`
 	Text  string `xml:",chardata"`
 }
+
+type UserResources struct {
+	XMLName xml.Name          `xml:"html"`
+	Head    UserResourcesHead `xml:"head"`
+	Body    UserResourcesBody `xml:"body"`
+}
+
+type UserResourcesHead struct {
+	Title string            `xml:"title"`
+	Base  UserResourcesBase `xml:"base"`
+}
+
+type UserResourcesBase struct {
+	Href string `xml:"href,attr"`
+}
+
+type UserResourcesBody struct {
+	Div UserResourcesDiv `xml:"div"`
+}
+
+type UserResourcesDiv struct {
+	Class string              `xml:"class,attr"`
+	Links []UserResourcesLink `xml:"a"`
+	Lists []UserLi            `xml:"ul>li"`
+}
+
+type UserResourcesLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+}
+
+type UserLi struct {
+	Class string            `xml:"class,attr"`
+	Title string            `xml:"title,attr"`
+	Link  UserResourcesLink `xml:"a"`
+	Span  UserResourcesSpan `xml:"span"`
+}
+
+type UserResourcesSpan struct {
+	Class string `xml:"class,attr"`
+	Text  string `xml:",chardata"`
+}
