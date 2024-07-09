@@ -1,6 +1,10 @@
 package abb
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/icholy/digest"
+)
 
 func NewClient(IP string, Username string, Password string) *Client {
 	abb := new(Client)
@@ -33,4 +37,9 @@ func (c *Client) SetUsername(Username string) {
 
 func (c *Client) SetPassword(Password string) {
 	c.Password = Password
+}
+
+func (c *Client) DigestAuthenticate() *http.Client {
+	client := &http.Client{Transport: &digest.Transport{Username: c.Username, Password: c.Password}}
+	return client
 }
