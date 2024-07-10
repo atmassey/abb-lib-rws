@@ -18,7 +18,7 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	resources_raw, err := io.ReadAll(resp.Body)
@@ -46,7 +46,7 @@ func (c *Client) GetControllerActions() (*ControllerActions, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	actions_raw, err := io.ReadAll(resp.Body)

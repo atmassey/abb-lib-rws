@@ -18,7 +18,7 @@ func (c *Client) GetFileResources() (*FileResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	resources_raw, err := io.ReadAll(resp.Body)

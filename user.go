@@ -18,7 +18,7 @@ func (c *Client) GetUsers() (*UserResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	users_raw, err := io.ReadAll(resp.Body)
