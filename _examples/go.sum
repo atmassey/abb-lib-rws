@@ -1,0 +1,4 @@
+github.com/atmassey/abb-lib-rws v0.0.0-20240710133555-67ef9bbca309 h1:15ISQ8qlc+0tSyzazYf5IpScLHpRmYbmIyfNmG5qny8=
+github.com/atmassey/abb-lib-rws v0.0.0-20240710133555-67ef9bbca309/go.mod h1:5T5AOMql3FsxTvo1owKvJ8SCJ9TdpC/LEE/OmII1CiU=
+github.com/icholy/digest v0.1.23 h1:4hX2pIloP0aDx7RJW0JewhPPy3R8kU+vWKdxPsCCGtY=
+github.com/icholy/digest v0.1.23/go.mod h1:QNrsSGQ5v7v9cReDI0+eyjsXGUoRSUZQHeQ5C4XLa0Y=
