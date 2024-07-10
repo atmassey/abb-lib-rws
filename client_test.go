@@ -43,3 +43,15 @@ func TestRestartController(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestIOSignals(t *testing.T) {
+
+	abb := NewClient("localhost", "Default User", "robotics")
+	signals, err := abb.GetIOSignals()
+	if err != nil {
+		t.Error(err)
+	}
+	for _, signal := range signals.Body.Div.UL.LIs {
+		fmt.Printf("Name: %s, Type: %s, Value: %s\n", signal.Name, signal.Type, signal.LValue)
+	}
+}

@@ -117,7 +117,7 @@ type UserResourcesSpan struct {
 	Text  string `xml:",chardata"`
 }
 
-type IOSignalsHTML struct {
+type IOSignals struct {
 	XMLName xml.Name      `xml:"html"`
 	Head    IOSignalsHead `xml:"head"`
 	Body    IOSignalsBody `xml:"body"`
