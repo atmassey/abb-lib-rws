@@ -47,7 +47,7 @@ func main() {
 	client := abb.NewClient("localhost", "Default User", "robotics")
     actions, err := client.GetControllerActions()
 	if err != nil {
-		t.Error(err)
+		panic(err)
 	}
     //list all actions that can be performed on the controller
 	for _, option := range actions.Body.Div.Select.Options {
