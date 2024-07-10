@@ -117,37 +117,54 @@ type UserResourcesSpan struct {
 	Text  string `xml:",chardata"`
 }
 
-type FileResources struct {
-	XMLName xml.Name        `xml:"html"`
-	Body    FileServiceBody `xml:"body"`
+type IOSignalsHTML struct {
+	XMLName xml.Name      `xml:"html"`
+	Head    IOSignalsHead `xml:"head"`
+	Body    IOSignalsBody `xml:"body"`
 }
 
-type FileServiceBody struct {
-	Div FileServiceDiv `xml:"div"`
+type IOSignalsHead struct {
+	XMLName xml.Name      `xml:"head"`
+	Title   string        `xml:"title"`
+	Base    IOSignalsBase `xml:"base"`
 }
 
-type FileServiceDiv struct {
-	Class string          `xml:"class,attr"`
-	Lists []FileServiceLi `xml:"ul>li"`
+type IOSignalsBase struct {
+	XMLName xml.Name `xml:"base"`
+	Href    string   `xml:"href,attr"`
 }
 
-type FileServiceLi struct {
-	Class      string           `xml:"class,attr"`
-	Title      string           `xml:"title,attr"`
-	ParentLink *FileServiceLink `xml:"a"`
-	SelfLink   *FileServiceLink `xml:"a"`
-	DeviceType FileServiceSpan  `xml:"span[class='fs-device-type']"`
-	FreeSpace  FileServiceSpan  `xml:"span[class='fs-free-space']"`
-	TotalSpace FileServiceSpan  `xml:"span[class='fs-total-space']"`
-	Enabled    FileServiceSpan  `xml:"span[class='fs-enabled']"`
-	ReadOnly   FileServiceSpan  `xml:"span[class='fs-readonly']"`
+type IOSignalsBody struct {
+	XMLName xml.Name     `xml:"body"`
+	Div     IOSignalsDiv `xml:"div"`
 }
 
-type FileServiceLink struct {
-	Href string `xml:"href,attr"`
-	Rel  string `xml:"rel,attr"`
+type IOSignalsDiv struct {
+	XMLName xml.Name        `xml:"div"`
+	Class   string          `xml:"class,attr"`
+	Links   []IOSignalsLink `xml:"a"`
+	UL      IOSignalsUL     `xml:"ul"`
 }
 
-type FileServiceSpan struct {
-	Text string `xml:",chardata"`
+type IOSignalsLink struct {
+	XMLName xml.Name `xml:"a"`
+	Href    string   `xml:"href,attr"`
+	Rel     string   `xml:"rel,attr"`
+}
+
+type IOSignalsUL struct {
+	XMLName xml.Name      `xml:"ul"`
+	LIs     []IOSignalsLI `xml:"li"`
+}
+
+type IOSignalsLI struct {
+	XMLName  xml.Name      `xml:"li"`
+	Class    string        `xml:"class,attr"`
+	Title    string        `xml:"title,attr"`
+	Link     IOSignalsLink `xml:"a"`
+	Name     string        `xml:"span.name"`
+	Type     string        `xml:"span.type"`
+	Category string        `xml:"span.category"`
+	LValue   string        `xml:"span.lvalue"`
+	LState   string        `xml:"span.lstate"`
 }

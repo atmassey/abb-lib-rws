@@ -34,3 +34,12 @@ func TestCreateDirectory(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestRestartController(t *testing.T) {
+
+	abb := NewClient("localhost", "Default User", "robotics")
+	err := abb.RestartController("restart")
+	if err != nil {
+		t.Error(err)
+	}
+}
