@@ -25,3 +25,12 @@ func TestBackup(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestCreateDirectory(t *testing.T) {
+
+	abb := NewClient("localhost", "Default User", "robotics")
+	err := abb.CreateDirectory("$TEMP", "my_test_directory")
+	if err != nil {
+		t.Error(err)
+	}
+}
