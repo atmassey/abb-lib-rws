@@ -10,7 +10,7 @@ import (
 func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	var ControllerResources ControllerResources
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("GET", "http://"+c.IP+"/ctrl", nil)
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/ctrl", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 func (c *Client) GetControllerActions() (*ControllerActions, error) {
 	var actions ControllerActions
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("GET", "http://"+c.IP+"/ctrl", nil)
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/ctrl", nil)
 	if err != nil {
 		return nil, err
 	}

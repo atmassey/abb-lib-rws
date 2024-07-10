@@ -12,7 +12,7 @@ import (
 func (c *Client) GetFileResources() (*FileResources, error) {
 	var FileResources FileResources
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("GET", "http://"+c.IP+"/fileservice", nil)
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/fileservice", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (c *Client) GetFileResources() (*FileResources, error) {
 // Example: $TEMP/my_test_directory
 func (c *Client) DeleteDirectory(Dir string) error {
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("DELETE", "http://"+c.IP+"/fileservice/"+Dir, nil)
+	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/fileservice/"+Dir, nil)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (c *Client) CreateDirectory(Env string, Dir string) error {
 	body.Add("fs-newname", Dir)
 	body.Add("fs-action", "create")
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("POST", "http://"+c.IP+"/fileservice/"+Env, bytes.NewBufferString(body.Encode()))
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/fileservice/"+Env, bytes.NewBufferString(body.Encode()))
 	if err != nil {
 		return err
 	}

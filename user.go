@@ -10,7 +10,7 @@ import (
 func (c *Client) GetUsers() (*UserResources, error) {
 	var users UserResources
 	c.DigestAuthenticate()
-	req, err := http.NewRequest("GET", "http://"+c.IP+"/users", nil)
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/users", nil)
 	if err != nil {
 		return nil, err
 	}

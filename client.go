@@ -6,17 +6,17 @@ import (
 	"github.com/icholy/digest"
 )
 
-func NewClient(IP string, Username string, Password string) *Client {
+func NewClient(Host string, Username string, Password string) *Client {
 	abb := new(Client)
-	abb.IP = IP
+	abb.Host = Host
 	abb.Username = Username
 	abb.Password = Password
 	abb.Client = &http.Client{}
 	return abb
 }
 
-func (c *Client) GetIP() string {
-	return c.IP
+func (c *Client) GetHost() string {
+	return c.Host
 }
 
 func (c *Client) GetUsername() string {
@@ -27,8 +27,8 @@ func (c *Client) GetPassword() string {
 	return c.Password
 }
 
-func (c *Client) SetIP(IP string) {
-	c.IP = IP
+func (c *Client) SetHost(Host string) {
+	c.Host = Host
 }
 
 func (c *Client) SetUsername(Username string) {

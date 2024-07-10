@@ -6,7 +6,7 @@ import (
 )
 
 type Client struct {
-	IP       string
+	Host     string
 	Username string
 	Password string
 	Client   *http.Client

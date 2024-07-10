@@ -14,7 +14,7 @@ func (c *Client) CreateBackup(Dir string) error {
 	body := url.Values{}
 	body.Add("backup", "/fileservice/"+Dir+"/")
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("POST", "http://"+c.IP+"/ctrl/backup", bytes.NewBufferString(body.Encode()))
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/backup", bytes.NewBufferString(body.Encode()))
 	if err != nil {
 		return err
 	}
