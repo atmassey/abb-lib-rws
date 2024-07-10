@@ -31,3 +31,22 @@ func (c *Client) GetFileResources() (*FileResources, error) {
 	}
 	return &FileResources, nil
 }
+
+// Delete a directory resource from the controller.
+// The resource should be the name of the enviorment variable plus the directory.
+// Example: $TEMP/my_test_directory
+func (c *Client) DeleteDirectoryResource(Resource string) error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("DELETE", "http://"+c.IP+"/fileservice/"+Resource, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	return nil
+}
