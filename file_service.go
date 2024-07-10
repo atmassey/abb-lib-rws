@@ -50,6 +50,7 @@ func (c *Client) DeleteDirectory(Dir string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
+	defer resp.Body.Close()
 	return nil
 }
 
@@ -73,5 +74,6 @@ func (c *Client) CreateDirectory(Env string, Dir string) error {
 	if resp.StatusCode != http.StatusCreated {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
+	defer resp.Body.Close()
 	return nil
 }

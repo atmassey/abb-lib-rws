@@ -29,6 +29,7 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	return &ControllerResources, nil
 }
 
