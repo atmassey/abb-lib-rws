@@ -1,4 +1,4 @@
-# ABB Robot Web Service Go API Wrapper
+# ABB Robot Web Service API Wrapper
 
 Go package for [ABB Robot Web Service API](https://developercenter.robotstudio.com/api/rwsApi/index.html)
 
