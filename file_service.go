@@ -12,9 +12,9 @@ import (
 // Delete a directory on the controller.
 // The directory should be the name of the enviorment variable plus the directory.
 // Example: $TEMP/my_test_directory
-func (c *Client) DeleteDirectory(Dir string) error {
+func (c *Client) DeleteDirectory(Path string) error {
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/fileservice/"+Dir, nil)
+	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/fileservice/"+Path, nil)
 	if err != nil {
 		return err
 	}
@@ -79,6 +79,53 @@ func (c *Client) GetFile(Source string, Filename string) error {
 	err = file.Close()
 	if err != nil {
 		return err
+	}
+	defer resp.Body.Close()
+	return nil
+}
+
+// Delete a file on the controller.
+// The file should be the name of the enviorment variable plus the file.
+// Example: $TEMP/my_test_file.txt
+func (c *Client) DeleteFile(Path string) error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/fileservice/"+Path, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	return nil
+}
+
+// Upload a file to the controller.
+// The source path should be the path to the file on the local machine.
+// The destination path should be the name of the enviorment variable plus the file.
+// Example: Source = /home/user/my_test_file.txt, Dest = $TEMP
+func (c *Client) UploadFile(SourcePath string, DestPath string) error {
+	file, err := os.Open(SourcePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("PUT", "http://"+c.Host+"/fileservice/"+DestPath+"/"+file.Name(), file)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/octet-stream")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
 	return nil
