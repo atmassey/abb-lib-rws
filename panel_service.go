@@ -8,7 +8,10 @@ import (
 )
 
 // Restart the controller with any of the following actions: restart | istart | pstart | bstart
-// CAUTION: This will restart the controller and all running programs will be stopped.
+// CAUTION: A restart will restart the controller and all running programs will be stopped. (Warmstart)
+// CAUTION: A "istart" will restart the controller and factory reset the controller.
+// CAUTION: A "pstart" will restart the controller and delete all rapid programs but keep all configuration data.
+// CAUTION: A "bstart" will restart the controller and revert it to its last auto-saved state.
 func (c *Client) RestartController(Action string) error {
 	body := url.Values{}
 	body.Add("restart-mode", Action)
