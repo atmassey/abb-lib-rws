@@ -76,6 +76,10 @@ func (c *Client) GetFile(Source string, Filename string) error {
 	if err != nil {
 		return err
 	}
+	err = file.Close()
+	if err != nil {
+		return err
+	}
 	defer resp.Body.Close()
 	return nil
 }
