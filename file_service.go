@@ -3,8 +3,10 @@ package abb
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 // Delete a directory on the controller.
@@ -46,6 +48,33 @@ func (c *Client) CreateDirectory(Env string, Dir string) error {
 	}
 	if resp.StatusCode != http.StatusCreated {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	return nil
+}
+
+// Get a file from the controller and save it with the specified filename.
+// Example: Source = $TEMP/my_test_file.txt, Filename = my_test_file.txt
+func (c *Client) GetFile(Source string, Filename string) error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/fileservice/"+Source, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	file, err := os.Create(Filename)
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(file, resp.Body)
+	if err != nil {
+		return err
 	}
 	defer resp.Body.Close()
 	return nil
