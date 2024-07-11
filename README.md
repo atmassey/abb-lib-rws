@@ -45,11 +45,11 @@ import "github.com/atmassey/abb-lib-rws"
 func main() {
 	//create a new client
 	client := abb.NewClient("localhost", "Default User", "robotics")
-    actions, err := client.GetControllerActions()
+	actions, err := client.GetControllerActions()
 	if err != nil {
 		panic(err)
 	}
-    //list all actions that can be performed on the controller
+    	//list all actions that can be performed on the controller
 	for _, option := range actions.Body.Div.Select.Options {
 		fmt.Println("Option value:", option.Value)
 	}
