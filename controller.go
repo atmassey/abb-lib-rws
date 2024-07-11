@@ -33,6 +33,7 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	return &ControllerResources, nil
 }
 
+// Returns the actions that can be performed on the controller
 func (c *Client) GetControllerActions() (*ControllerActions, error) {
 	var actions ControllerActions
 	c.Client = c.DigestAuthenticate()

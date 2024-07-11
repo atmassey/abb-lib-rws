@@ -8,6 +8,7 @@ import (
 )
 
 // Restart the controller with any of the following actions: restart | istart | pstart | bstart
+// CAUTION: This will restart the controller and all running programs will be stopped.
 func (c *Client) RestartController(Action string) error {
 	body := url.Values{}
 	body.Add("restart-mode", Action)

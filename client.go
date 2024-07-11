@@ -39,6 +39,7 @@ func (c *Client) SetPassword(Password string) {
 	c.Password = Password
 }
 
+// DigestAuthenticate returns a new http.Client with digest authentication
 func (c *Client) DigestAuthenticate() *http.Client {
 	client := &http.Client{Transport: &digest.Transport{Username: c.Username, Password: c.Password}}
 	return client
