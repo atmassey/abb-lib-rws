@@ -99,3 +99,36 @@ func TestControllerActions(t *testing.T) {
 		fmt.Println("Option value:", option.Value)
 	}
 }
+
+func TestRobotType(t *testing.T) {
+
+	robotType := RobotType{}
+	//sample response from the api documentation
+	robotType_raw := `<?xml version="1.0" encoding="UTF-8"?>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <title>system</title>
+    <base href="http://localhost/rw/system/robottype/"/>
+    </head>
+    <body>
+    <div class="state">
+    <a href="" rel="self"/>
+    <ul>
+    <li class="sys-robottype" title="1">
+    <span class="robot-type">IRB 120-3/0.6</span>
+    </li>
+    <li class="sys-robottype" title="2">
+    <span class="robot-type">IRB 140T-5/0.8 Type C</span>
+    </li>
+    </ul>
+    </div>
+    </body>
+    </html>`
+	err := xml.Unmarshal([]byte(robotType_raw), &robotType)
+	if err != nil {
+		t.Error(err)
+	}
+	for _, robot := range robotType.Body.State.Robots {
+		fmt.Printf("Robot Type: %s, Title: %s\n", robot.RobotType, robot.Title)
+	}
+}
