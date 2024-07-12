@@ -158,13 +158,15 @@ type IOSignalsUL struct {
 }
 
 type IOSignalsLI struct {
-	XMLName  xml.Name      `xml:"li"`
-	Class    string        `xml:"class,attr"`
-	Title    string        `xml:"title,attr"`
-	Link     IOSignalsLink `xml:"a"`
-	Name     string        `xml:"span.name"`
-	Type     string        `xml:"span.type"`
-	Category string        `xml:"span.category"`
-	LValue   string        `xml:"span.lvalue"`
-	LState   string        `xml:"span.lstate"`
+	XMLName xml.Name        `xml:"li"`
+	Class   string          `xml:"class,attr"`
+	Title   string          `xml:"title,attr"`
+	Link    IOSignalsLink   `xml:"a"`
+	Spans   []IOSignalsSpan `xml:"span"`
+}
+
+type IOSignalsSpan struct {
+	XMLName xml.Name `xml:"span"`
+	Content string   `xml:",chardata"`
+	Class   string   `xml:"class,attr"`
 }

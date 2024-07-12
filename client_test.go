@@ -48,7 +48,18 @@ func TestIOSignals(t *testing.T) {
 	fmt.Printf("Signals: %d\n", len(signals.Body.Div.UL.LIs))
 
 	for _, signal := range signals.Body.Div.UL.LIs {
-		fmt.Printf("Name: %s, Type: %s, Value: %s\n", signal.Name, signal.Type, signal.LValue)
+		name, sigType, lvalue := "", "", ""
+		for _, span := range signal.Spans {
+			switch span.Class {
+			case "name":
+				name = span.Content
+			case "type":
+				sigType = span.Content
+			case "lvalue":
+				lvalue = span.Content
+			}
+		}
+		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, sigType, lvalue)
 	}
 }
 
