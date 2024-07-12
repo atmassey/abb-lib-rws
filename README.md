@@ -40,7 +40,11 @@ func main() {
 ```Go
 package main
 
-import "github.com/atmassey/abb-lib-rws"
+import (
+	"fmt"
+
+	"github.com/atmassey/abb-lib-rws"
+	)
 
 func main() {
 	//create a new client
@@ -64,7 +68,7 @@ package main
 
 import (
 	"fmt"
-
+	
 	"github.com/atmassey/abb-lib-rws"
 )
 
