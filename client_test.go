@@ -8,7 +8,8 @@ import (
 
 func TestIOSignals(t *testing.T) {
 
-	signals := IOSignals{}
+	signals := IOSignalsHTML{}
+	signals_struct := IOSignals{}
 	//sample response from the api documentation
 	signals_raw := `<?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -53,19 +54,27 @@ func TestIOSignals(t *testing.T) {
 			switch span.Class {
 			case "name":
 				name = span.Content
+				signals_struct.SignalName = append(signals_struct.SignalName, span.Content)
 			case "type":
 				sigType = span.Content
+				signals_struct.SignalType = append(signals_struct.SignalType, span.Content)
 			case "lvalue":
 				lvalue = span.Content
+				signals_struct.SignalValue = append(signals_struct.SignalValue, span.Content)
 			}
 		}
 		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, sigType, lvalue)
+	}
+	fmt.Println("Struct:")
+	for i, name := range signals_struct.SignalName {
+		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, signals_struct.SignalType[i], signals_struct.SignalValue[i])
 	}
 }
 
 func TestControllerActions(t *testing.T) {
 
-	actions := ControllerActions{}
+	actions := ControllerActionsHTML{}
+	actions_struct := ControllerActions{}
 	//sample response from the api documentation
 	actions_raw := `<?xml version="1.0" encoding="utf-8"?>
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -96,7 +105,10 @@ func TestControllerActions(t *testing.T) {
 		t.Error(err)
 	}
 	for _, option := range actions.Body.Div.Select.Options {
-		fmt.Println("Option value:", option.Value)
+		actions_struct.Actions = append(actions_struct.Actions, option.Value)
+	}
+	for _, action := range actions_struct.Actions {
+		fmt.Printf("Action: %s\n", action)
 	}
 }
 

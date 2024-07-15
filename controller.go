@@ -35,7 +35,8 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 
 // Returns the actions that can be performed on the controller
 func (c *Client) GetControllerActions() (*ControllerActions, error) {
-	var actions ControllerActions
+	var actions ControllerActionsHTML
+	var actions_struct ControllerActions
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/ctrl", nil)
 	if err != nil {
@@ -60,5 +61,8 @@ func (c *Client) GetControllerActions() (*ControllerActions, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return &actions, nil
+	for _, option := range actions.Body.Div.Select.Options {
+		actions_struct.Actions = append(actions_struct.Actions, option.Value)
+	}
+	return &actions_struct, nil
 }

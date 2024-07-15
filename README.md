@@ -54,8 +54,8 @@ func main() {
 		panic(err)
 	}
     	//list all actions that can be performed on the controller
-	for _, option := range actions.Body.Div.Select.Options {
-		fmt.Println("Option value:", option.Value)
+	for _, action := range actions.Actions {
+		fmt.Printf("Action: %s\n", action)
 	}
 }
 
@@ -78,21 +78,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Signals: %d\n", len(signals.Body.Div.UL.LIs))
-
-	for _, signal := range signals.Body.Div.UL.LIs {
-		name, sigType, lvalue := "", "", ""
-		for _, span := range signal.Spans {
-			switch span.Class {
-			case "name":
-				name = span.Content
-			case "type":
-				sigType = span.Content
-			case "lvalue":
-				lvalue = span.Content
-			}
-		}
-		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, sigType, lvalue)
+	for i, name := range signals.SignalName {
+		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, signals_struct.SignalType[i], signals_struct.SignalValue[i])
 	}
 }
 

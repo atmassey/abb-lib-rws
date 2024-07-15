@@ -13,6 +13,10 @@ type Client struct {
 }
 
 type ControllerActions struct {
+	Actions []string
+}
+
+type ControllerActionsHTML struct {
 	XMLName xml.Name              `xml:"html"`
 	Body    ControllerActionsBody `xml:"body"`
 }
@@ -118,6 +122,12 @@ type UserResourcesSpan struct {
 }
 
 type IOSignals struct {
+	SignalName  []string
+	SignalType  []string
+	SignalValue []string
+}
+
+type IOSignalsHTML struct {
 	XMLName xml.Name      `xml:"html"`
 	Head    IOSignalsHead `xml:"head"`
 	Body    IOSignalsBody `xml:"body"`
