@@ -214,3 +214,24 @@ type RobotTypeRobot struct {
 	Title     string   `xml:"title,attr"`
 	RobotType string   `xml:"span"`
 }
+
+type OperationMode struct {
+	Links    OperationModeBase  `json:"_links"`
+	Embedded OperationModeState `json:"_embedded"`
+}
+type OperationModeLinks struct {
+	Base OperationModeBase `json:"base"`
+}
+
+type OperationModeBase struct {
+	Href string `json:"href"`
+}
+type OperationModeState struct {
+	State []OperationModeMeta `json:"_state"`
+}
+
+type OperationModeMeta struct {
+	Type   string `json:"_type"`
+	Title  string `json:"_title"`
+	Opmode string `json:"opmode"`
+}

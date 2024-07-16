@@ -1,6 +1,7 @@
 package abb
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"testing"
@@ -142,5 +143,34 @@ func TestRobotType(t *testing.T) {
 	}
 	for _, robot := range robotType.Body.State.Robots {
 		fmt.Printf("Robot Type: %s, Title: %s\n", robot.RobotType, robot.Title)
+	}
+}
+
+func TestControllerMode(t *testing.T) {
+	mode := OperationMode{}
+	//sample response from the api documentation
+	mode_raw := `{
+    "_links": {
+        "base": {
+            "href": "http://10.40.36.102:80/rw/panel/opmode/"
+        }
+    },
+    "_embedded": {
+        "_state": [
+            {
+                "_type": "pnl-opmode",
+                "_title": "opmode",
+                "opmode": "AUTO"
+            }
+        ]
+    }
+}
+`
+	err := json.Unmarshal([]byte(mode_raw), &mode)
+	if err != nil {
+		t.Error(err)
+	}
+	for _, state := range mode.Embedded.State {
+		fmt.Printf("Operation Mode: %s\n", state.Opmode)
 	}
 }

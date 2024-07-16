@@ -2,6 +2,7 @@ package abb
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -33,4 +34,35 @@ func (c *Client) RestartController(Action string) error {
 	}
 	defer resp.Body.Close()
 	return nil
+}
+
+// GetOperationMode returns the current operation mode of the controller.
+// Possible values: (INIT | AUTO_CH | MANF_CH | MANR | MANF | AUTO | UNDEF)
+func (c *Client) GetOperationMode() (string, error) {
+	var opmode OperationMode
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/panel/opmode", nil)
+	if err != nil {
+		return "", err
+	}
+	q := req.URL.Query()
+	q.Add("json", "1")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(&opmode)
+	if err != nil {
+		return "", err
+	}
+	mode := opmode.Embedded.State[0].Opmode
+	if mode == "" {
+		return "", fmt.Errorf("OP Mode Not Found: %v", opmode)
+	}
+	return mode, nil
 }
