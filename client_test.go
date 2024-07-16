@@ -174,3 +174,91 @@ func TestControllerMode(t *testing.T) {
 		fmt.Printf("Operation Mode: %s\n", state.Opmode)
 	}
 }
+
+func TestSystemEnergyMetrics(t *testing.T) {
+	var EnergyMetricsRaw SystemEnergy
+	var EnergyMetricsDecoded SystemEnergyMetrics
+	data := `{
+		"_links": {
+			"base": {
+				"href": "http://10.40.36.103:80/rw/system/energy/"
+			}
+		},
+		"_embedded": {
+			"_state": [
+				{
+					"_links": {
+						"self": {
+							"href": "?json=1"
+						}
+					},
+					"_type": "sys-energy-state-li",
+					"_title": "energy-state",
+					"state": "0",
+					"energy-state": "blocked",
+					"change-count": "14640",
+					"time-stamp": "2024-07-16 T 12:00:00",
+					"reset-time": "2021-08-12 T 05:53:05",
+					"interval-length": "3600",
+					"interval-energy": "0",
+					"accumulated-energy": "458726901.0453996",
+					"mechunits": [
+						{
+							"_type": "sys-energy-mec-li",
+							"_title": "ROB_1",
+							"axes": [
+								{
+									"_type": "sys-energy-axis-li",
+									"_title": "1",
+									"interval-energy": "0"
+								},
+								{
+									"_type": "sys-energy-axis-li",
+									"_title": "2",
+									"interval-energy": "0"
+								},
+								{
+									"_type": "sys-energy-axis-li",
+									"_title": "3",
+									"interval-energy": "0"
+								},
+								{
+									"_type": "sys-energy-axis-li",
+									"_title": "4",
+									"interval-energy": "0"
+								},
+								{
+									"_type": "sys-energy-axis-li",
+									"_title": "5",
+									"interval-energy": "0"
+								},
+								{
+									"_type": "sys-energy-axis-li",
+									"_title": "6",
+									"interval-energy": "0"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	}`
+	err := json.Unmarshal([]byte(data), &EnergyMetricsRaw)
+	if err != nil {
+		t.Errorf("Error decoding response: %s", err)
+	}
+	EnergyMetricsDecoded.AccumulatedEnergy = EnergyMetricsRaw.Embedded.State[0].AccumulatedEnergy
+	for _, state := range EnergyMetricsRaw.Embedded.State {
+		for _, MechUnits := range state.MechUnits {
+			for _, axis := range MechUnits.Axis {
+				axisEnergy := SystemAxisEnergy{Axis: axis.Title, Energy: axis.IntervalEnergy}
+				EnergyMetricsDecoded.AxisEnergy = append(EnergyMetricsDecoded.AxisEnergy, axisEnergy)
+			}
+		}
+	}
+	fmt.Printf("Accumulated Energy: %s\n", EnergyMetricsDecoded.AccumulatedEnergy)
+	for _, axis := range EnergyMetricsDecoded.AxisEnergy {
+		fmt.Printf("Axis: %s, Energy: %s\n", axis.Axis, axis.Energy)
+	}
+}

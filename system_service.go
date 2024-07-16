@@ -1,6 +1,7 @@
 package abb
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -31,4 +32,39 @@ func (c *Client) GetRobotType() (*RobotType, error) {
 	}
 	defer resp.Body.Close()
 	return &robotType, nil
+}
+
+func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
+	var EnergyMetricsDecoded SystemEnergyMetrics
+	var EnergyMetricsRaw SystemEnergy
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/system/energy", nil)
+	if err != nil {
+		return nil, err
+	}
+	q := req.URL.Query()
+	q.Add("json", "1")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(&EnergyMetricsRaw)
+	if err != nil {
+		return nil, err
+	}
+	EnergyMetricsDecoded.AccumulatedEnergy = EnergyMetricsRaw.Embedded.State[0].AccumulatedEnergy
+	for _, state := range EnergyMetricsRaw.Embedded.State {
+		for _, MechUnits := range state.MechUnits {
+			for _, axis := range MechUnits.Axis {
+				axisEnergy := SystemAxisEnergy{Axis: axis.Title, Energy: axis.IntervalEnergy}
+				EnergyMetricsDecoded.AxisEnergy = append(EnergyMetricsDecoded.AxisEnergy, axisEnergy)
+			}
+		}
+	}
+	return &EnergyMetricsDecoded, nil
 }

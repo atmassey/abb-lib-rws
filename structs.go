@@ -235,3 +235,65 @@ type OperationModeMeta struct {
 	Title  string `json:"_title"`
 	Opmode string `json:"opmode"`
 }
+
+type SystemEnergy struct {
+	Links    SystemEneryLinks     `json:"_links"`
+	Embedded SystemEnergyEmbedded `json:"_embedded"`
+}
+
+type SystemEneryLinks struct {
+	Base SystemEneryBase `json:"base"`
+}
+
+type SystemEneryBase struct {
+	Href string `json:"href"`
+}
+
+type SystemEnergyEmbedded struct {
+	State []StateListLinks `json:"_state"`
+}
+
+type StateListLinks struct {
+	Links             StateListLinksSelf `json:"_links"`
+	Type              string             `json:"_type"`
+	Title             string             `json:"_title"`
+	State             string             `json:"state"`
+	EnergyState       string             `json:"energy-state"`
+	ChangeCount       string             `json:"change-count"`
+	TimeStamp         string             `json:"time-stamp"`
+	ResetTime         string             `json:"reset-time"`
+	IntervalLength    string             `json:"interval-length"`
+	IntervalEnergy    string             `json:"interval-energy"`
+	AccumulatedEnergy string             `json:"accumulated-energy"`
+	MechUnits         []SystemEnergyAxes `json:"mechunits"`
+}
+
+type StateListLinksSelf struct {
+	Self StateListLinksSelfHref `json:"self"`
+}
+
+type StateListLinksSelfHref struct {
+	Href string `json:"href"`
+}
+
+type SystemEnergyAxes struct {
+	Type  string             `json:"_type"`
+	Title string             `json:"_title"`
+	Axis  []SystemEnergyAxis `json:"axes"`
+}
+
+type SystemEnergyAxis struct {
+	Type           string `json:"_type"`
+	Title          string `json:"_title"`
+	IntervalEnergy string `json:"interval-energy"`
+}
+
+type SystemEnergyMetrics struct {
+	AccumulatedEnergy string
+	AxisEnergy        []SystemAxisEnergy
+}
+
+type SystemAxisEnergy struct {
+	Axis   string
+	Energy string
+}
