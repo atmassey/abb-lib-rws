@@ -68,3 +68,36 @@ func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
 	}
 	return &EnergyMetricsDecoded, nil
 }
+
+func (c *Client) GetInstalledProducts() (*InstalledSystemProducts, error) {
+	var InstalledProducts InstalledProducts
+	var InstalledProductsDecoded InstalledSystemProducts
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/system/products", nil)
+	if err != nil {
+		return nil, err
+	}
+	q := req.URL.Query()
+	q.Add("json", "1")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(&InstalledProducts)
+	if err != nil {
+		return nil, err
+	}
+	installedProducts := InstalledSystemProducts{}
+	for _, product := range InstalledProducts.State {
+		title := product.Title
+		version := product.VersionName
+		InstalledProductsDecoded.Title = append(installedProducts.Title, title)
+		InstalledProductsDecoded.Version = append(installedProducts.Version, version)
+	}
+	return &InstalledProductsDecoded, nil
+}

@@ -297,3 +297,32 @@ type SystemAxisEnergy struct {
 	Axis   string
 	Energy string
 }
+
+type InstalledSystemProducts struct {
+	Title   []string
+	Version []string
+}
+
+type InstalledProducts struct {
+	Links InstalledProductsLinks   `json:"_links"`
+	State []InstalledProductsState `json:"state"`
+}
+
+type InstalledProductsLinks struct {
+	Base InstalledProductsBase `json:"base"`
+	Self InstalledProductsSelf `json:"self"`
+}
+
+type InstalledProductsBase struct {
+	Href string `json:"href"`
+}
+
+type InstalledProductsSelf struct {
+	Href string `json:"href"`
+}
+
+type InstalledProductsState struct {
+	Type        string `json:"_type"`
+	Title       string `json:"_title"`
+	VersionName string `json:"version-name"`
+}
