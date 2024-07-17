@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// Returns a struct of the robot type.
 func (c *Client) GetRobotType() (*RobotType, error) {
 	var robotType RobotType
 	c.Client = c.DigestAuthenticate()
@@ -34,6 +35,9 @@ func (c *Client) GetRobotType() (*RobotType, error) {
 	return &robotType, nil
 }
 
+// Returns a struct of energy metrics for each axis on the controller.
+// The struct includes the axis title and the energy consumption for the axis.
+// The struct also includes the total accumulated energy consumption.
 func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
 	var EnergyMetricsDecoded SystemEnergyMetrics
 	var EnergyMetricsRaw SystemEnergy
@@ -69,6 +73,8 @@ func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
 	return &EnergyMetricsDecoded, nil
 }
 
+// GetInstalledProducts returns a struct of installed products on the controller.
+// The struct includes the product title and version.
 func (c *Client) GetInstalledProducts() (*InstalledSystemProducts, error) {
 	var InstalledProducts InstalledProducts
 	var InstalledProductsDecoded InstalledSystemProducts
