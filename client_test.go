@@ -7,71 +7,6 @@ import (
 	"testing"
 )
 
-func TestIOSignals(t *testing.T) {
-
-	signals := IOSignalsHTML{}
-	signals_struct := IOSignals{}
-	//sample response from the api documentation
-	signals_raw := `<?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>io</title>
-    <base href="http://localhost/rw/iosystem/"/>
-</head>
-<body>
-    <div class="state">
-    <a href="signals" rel="self"/>
-    <a href= "signals?action=show" rel="action"/>
-    <ul>
-        <li class="ios-signal-li" title="Local/DRV_1/DRV1TESTE2">
-            <a href="signals/Local/DRV_1/DRV1TESTE2" rel="self"/>
-            <span class="name">DRV1TESTE2</span>
-            <span class="type">DO</span>
-            <span class="category">safety</span>
-            <span class="lvalue">0</span>
-            <span class="lstate">simulated</span>
-        </li>
-        <li class="ios-signal-li" title="Local/DRV_1/DRV1BRAKE">
-            <a href="signals/Local/DRV_1/DRV1BRAKE" rel="self"/>
-            <span class="name">DRV1BRAKE</span>
-            <span class="type">DO</span>
-            <span class="category">safety</span>
-            <span class="lvalue">0</span>
-            <span class="lstate">simulated</span>
-        </li>
-    </ul>
-    </div>
-</body>
-</html>`
-	err := xml.Unmarshal([]byte(signals_raw), &signals)
-	if err != nil {
-		t.Error(err)
-	}
-	fmt.Printf("Signals: %d\n", len(signals.Body.Div.UL.LIs))
-
-	for _, signal := range signals.Body.Div.UL.LIs {
-		name, sigType, lvalue := "", "", ""
-		for _, span := range signal.Spans {
-			switch span.Class {
-			case "name":
-				name = span.Content
-				signals_struct.SignalName = append(signals_struct.SignalName, span.Content)
-			case "type":
-				sigType = span.Content
-				signals_struct.SignalType = append(signals_struct.SignalType, span.Content)
-			case "lvalue":
-				lvalue = span.Content
-				signals_struct.SignalValue = append(signals_struct.SignalValue, span.Content)
-			}
-		}
-		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, sigType, lvalue)
-	}
-	fmt.Println("Struct:")
-	for i, name := range signals_struct.SignalName {
-		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name, signals_struct.SignalType[i], signals_struct.SignalValue[i])
-	}
-}
-
 func TestControllerActions(t *testing.T) {
 
 	actions := ControllerActionsHTML{}
@@ -260,5 +195,104 @@ func TestSystemEnergyMetrics(t *testing.T) {
 	fmt.Printf("Accumulated Energy: %s\n", EnergyMetricsDecoded.AccumulatedEnergy)
 	for _, axis := range EnergyMetricsDecoded.AxisEnergy {
 		fmt.Printf("Axis: %s, Energy: %s\n", axis.Axis, axis.Energy)
+	}
+}
+
+func TestGetIOSignalsJson(t *testing.T) {
+	signals_raw := IOSignalsJson{}
+	signals := IOSignals{}
+	//sample response from the api documentation
+	data := `{
+    "_links": {
+        "base": {
+            "href": "http://localhost:80/rw/iosystem/"
+        },
+        "next": {
+            "href": "signals?start=100&limit=100&json=1"
+        }
+    },
+    "_embedded": {
+        "_state": [
+            {
+                "_links": {
+                    "self": {
+                        "href": "signals/PROFINET/pn_57380_DO8xDC24V_0_5A/do_Paint_Nozzle_Trig?json=1"
+                    }
+                },
+                "_type": "ios-signal-li",
+                "_title": "PROFINET/pn_57380_DO8xDC24V_0_5A/do_Paint_Nozzle_Trig",
+                "name": "doTest1",
+                "type": "DO",
+                "category": "",
+                "lvalue": 1,
+                "lstate": "not simulated"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "signals/PROFINET/SLAVE_PLC/soRBT_Safety_OK?json=1"
+                    }
+                },
+                "_type": "ios-signal-li",
+                "_title": "PROFINET/SLAVE_PLC/soRBT_Safety_OK",
+                "name": "doTest2",
+                "type": "DO",
+                "category": "ProfiSafe",
+                "lvalue": 0,
+                "lstate": "not simulated"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "signals/PROFINET/SLAVE_PLC/soRBT_Sync_OK?json=1"
+                    }
+                },
+                "_type": "ios-signal-li",
+                "_title": "PROFINET/SLAVE_PLC/soRBT_Sync_OK",
+                "name": "doTest3",
+                "type": "DO",
+                "category": "ProfiSafe",
+                "lvalue": 1,
+                "lstate": "not simulated"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "signals/PROFINET/SLAVE_PLC/soRBT_AutoStop_OK?json=1"
+                    }
+                },
+                "_type": "ios-signal-li",
+                "_title": "PROFINET/SLAVE_PLC/soRBT_AutoStop_OK",
+                "name": "doTest4",
+                "type": "DO",
+                "category": "ProfiSafe",
+                "lvalue": 0,
+                "lstate": "not simulated"
+            },
+            {
+                "_links": {
+                    "self": {
+                        "href": "signals/PROFINET/SLAVE_PLC/soRBT_GenStop_OK?json=1"
+                    }
+                },
+                "_type": "ios-signal-li",
+                "_title": "PROFINET/SLAVE_PLC/soRBT_GenStop_OK",
+                "name": "doTest5",
+                "type": "DO",
+                "category": "ProfiSafe",
+                "lvalue": 1,
+                "lstate": "not simulated"
+            }
+    	]
+		}
+	}`
+	json.Unmarshal([]byte(data), &signals_raw)
+	for _, state := range signals_raw.Embedded.State {
+		signals.SignalName = append(signals.SignalName, state.Name)
+		signals.SignalType = append(signals.SignalType, state.Type)
+		signals.SignalValue = append(signals.SignalValue, state.Value)
+	}
+	for i, signal := range signals.SignalName {
+		fmt.Printf("Signal: %s, Type: %s, Value: %v\n", signal, signals.SignalType[i], signals.SignalValue[i])
 	}
 }

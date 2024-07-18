@@ -121,66 +121,6 @@ type UserResourcesSpan struct {
 	Text  string `xml:",chardata"`
 }
 
-type IOSignals struct {
-	SignalName  []string
-	SignalType  []string
-	SignalValue []string
-}
-
-type IOSignalsHTML struct {
-	XMLName xml.Name      `xml:"html"`
-	Head    IOSignalsHead `xml:"head"`
-	Body    IOSignalsBody `xml:"body"`
-}
-
-type IOSignalsHead struct {
-	XMLName xml.Name      `xml:"head"`
-	Title   string        `xml:"title"`
-	Base    IOSignalsBase `xml:"base"`
-}
-
-type IOSignalsBase struct {
-	XMLName xml.Name `xml:"base"`
-	Href    string   `xml:"href,attr"`
-}
-
-type IOSignalsBody struct {
-	XMLName xml.Name     `xml:"body"`
-	Div     IOSignalsDiv `xml:"div"`
-}
-
-type IOSignalsDiv struct {
-	XMLName xml.Name        `xml:"div"`
-	Class   string          `xml:"class,attr"`
-	Links   []IOSignalsLink `xml:"a"`
-	UL      IOSignalsUL     `xml:"ul"`
-}
-
-type IOSignalsLink struct {
-	XMLName xml.Name `xml:"a"`
-	Href    string   `xml:"href,attr"`
-	Rel     string   `xml:"rel,attr"`
-}
-
-type IOSignalsUL struct {
-	XMLName xml.Name      `xml:"ul"`
-	LIs     []IOSignalsLI `xml:"li"`
-}
-
-type IOSignalsLI struct {
-	XMLName xml.Name        `xml:"li"`
-	Class   string          `xml:"class,attr"`
-	Title   string          `xml:"title,attr"`
-	Link    IOSignalsLink   `xml:"a"`
-	Spans   []IOSignalsSpan `xml:"span"`
-}
-
-type IOSignalsSpan struct {
-	XMLName xml.Name `xml:"span"`
-	Content string   `xml:",chardata"`
-	Class   string   `xml:"class,attr"`
-}
-
 type RobotType struct {
 	XMLName xml.Name      `xml:"html"`
 	Head    RobotTypeHead `xml:"head"`
@@ -325,4 +265,45 @@ type InstalledProductsState struct {
 	Type        string `json:"_type"`
 	Title       string `json:"_title"`
 	VersionName string `json:"version-name"`
+}
+
+type IOSignalsJson struct {
+	Links    IOSignalsJsonLinks `json:"_links"`
+	Embedded IOSignalsJsonState `json:"_embedded"`
+}
+
+type IOSignalsJsonLinks struct {
+	Base IOSignalsJsonBase `json:"base"`
+}
+
+type IOSignalsJsonBase struct {
+	Href string `json:"href"`
+}
+
+type IOSignalsJsonState struct {
+	State []IOSignalsJsonMeta `json:"_state"`
+}
+
+type IOSignalsJsonMeta struct {
+	Links           IOSignalsJsonMetaLinks `json:"_links"`
+	TypeT           string                 `json:"_type"`
+	Name            string                 `json:"name"`
+	Type            string                 `json:"type"`
+	Category        string                 `json:"category"`
+	Value           int                    `json:"lvalue"`
+	SimulationState string                 `json:"lstate"`
+}
+
+type IOSignalsJsonMetaLinks struct {
+	Self IOSignalsJsonMetaLinksSelf `json:"self"`
+}
+
+type IOSignalsJsonMetaLinksSelf struct {
+	Href string `json:"href"`
+}
+
+type IOSignals struct {
+	SignalName  []string
+	SignalType  []string
+	SignalValue []int
 }

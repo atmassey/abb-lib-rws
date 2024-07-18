@@ -1,20 +1,23 @@
 package abb
 
 import (
-	"encoding/xml"
+	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 )
 
 func (c *Client) GetIOSignals() (*IOSignals, error) {
-	var signals IOSignalsHTML
-	var signals_struct IOSignals
+	var signals IOSignals
+	var signals_raw IOSignalsJson
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/iosystem/signals", nil)
 	if err != nil {
 		return nil, err
 	}
+	q := req.URL.Query()
+	q.Add("json", "1")
+	req.URL.RawQuery = q.Encode()
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
@@ -22,26 +25,20 @@ func (c *Client) GetIOSignals() (*IOSignals, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	signals_raw, err := io.ReadAll(resp.Body)
+	err = json.NewDecoder(resp.Body).Decode(&signals_raw)
 	if err != nil {
-		return nil, err
-	}
-	err = xml.Unmarshal(signals_raw, &signals)
-	if err != nil {
+		log.Printf("Error decoding JSON: %v", err)
+		if e, ok := err.(*json.SyntaxError); ok {
+			log.Printf("Syntax error at byte offset %d", e.Offset)
+		}
+		log.Printf("Raw JSON: %v", signals_raw)
 		return nil, err
 	}
 	defer resp.Body.Close()
-	for _, signal := range signals.Body.Div.UL.LIs {
-		for _, span := range signal.Spans {
-			switch span.Class {
-			case "name":
-				signals_struct.SignalName = append(signals_struct.SignalName, span.Content)
-			case "type":
-				signals_struct.SignalType = append(signals_struct.SignalType, span.Content)
-			case "lvalue":
-				signals_struct.SignalValue = append(signals_struct.SignalValue, span.Content)
-			}
-		}
+	for _, signal := range signals_raw.Embedded.State {
+		signals.SignalName = append(signals.SignalName, signal.Name)
+		signals.SignalType = append(signals.SignalType, signal.Type)
+		signals.SignalValue = append(signals.SignalValue, signal.Value)
 	}
-	return &signals_struct, nil
+	return &signals, nil
 }
