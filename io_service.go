@@ -3,7 +3,6 @@ package abb
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -27,11 +26,6 @@ func (c *Client) GetIOSignals() (*IOSignals, error) {
 	}
 	err = json.NewDecoder(resp.Body).Decode(&signals_raw)
 	if err != nil {
-		log.Printf("Error decoding JSON: %v", err)
-		if e, ok := err.(*json.SyntaxError); ok {
-			log.Printf("Syntax error at byte offset %d", e.Offset)
-		}
-		log.Printf("Raw JSON: %v", signals_raw)
 		return nil, err
 	}
 	defer resp.Body.Close()
