@@ -286,7 +286,10 @@ func TestGetIOSignalsJson(t *testing.T) {
     	]
 		}
 	}`
-	json.Unmarshal([]byte(data), &signals_raw)
+	err := json.Unmarshal([]byte(data), &signals_raw)
+	if err != nil {
+		t.Errorf("Error decoding response: %s", err)
+	}
 	for _, state := range signals_raw.Embedded.State {
 		signals.SignalName = append(signals.SignalName, state.Name)
 		signals.SignalType = append(signals.SignalType, state.Type)
