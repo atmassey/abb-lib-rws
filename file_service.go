@@ -9,8 +9,8 @@ import (
 	"os"
 )
 
-// Delete a directory on the controller.
-// The directory should be the name of the enviorment variable plus the directory.
+// DeleteDirectory delete a directory on the controller.
+// The directory should be the name of the environment variable plus the directory.
 // Example: $TEMP/my_test_directory
 func (c *Client) DeleteDirectory(Path string) error {
 	c.Client = c.DigestAuthenticate()
@@ -29,8 +29,8 @@ func (c *Client) DeleteDirectory(Path string) error {
 	return nil
 }
 
-// Create a directory on the controller.
-// The resource should be the name of the enviorment variable plus the directory.
+// CreateDirectory will create a directory on the controller.
+// The resource should be the name of the environment variable plus the directory.
 // Example: Env = $TEMP, Dir = my_test_directory
 func (c *Client) CreateDirectory(Env string, Dir string) error {
 	body := url.Values{}
@@ -53,7 +53,7 @@ func (c *Client) CreateDirectory(Env string, Dir string) error {
 	return nil
 }
 
-// Get a file from the controller and save it with the specified filename.
+// GetFile will get a file from the controller and save it with the specified filename.
 // Example: Source = $TEMP/my_test_file.txt, Filename = my_test_file.txt
 func (c *Client) GetFile(Source string, Filename string) error {
 	c.Client = c.DigestAuthenticate()
@@ -84,8 +84,8 @@ func (c *Client) GetFile(Source string, Filename string) error {
 	return nil
 }
 
-// Delete a file on the controller.
-// The file should be the name of the enviorment variable plus the file.
+// DeleteFile will delete a file on the controller.
+// The file should be the name of the environment variable plus the file.
 // Example: $TEMP/my_test_file.txt
 func (c *Client) DeleteFile(Path string) error {
 	c.Client = c.DigestAuthenticate()
@@ -104,9 +104,9 @@ func (c *Client) DeleteFile(Path string) error {
 	return nil
 }
 
-// Upload a file to the controller.
+// UploadFile wil upload a file to the controller.
 // The source path should be the path to the file on the local machine.
-// The destination path should be the name of the enviorment variable plus the file.
+// The destination path should be the name of the environment variable plus the file.
 // Example: Source = /home/user/my_test_file.txt, Dest = $TEMP
 func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 	file, err := os.Open(SourcePath)
@@ -128,5 +128,23 @@ func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
+	return nil
+}
+
+// RenameDirectory will rename a directory at the given path.
+// Example path: $TEMP/test
+func (c *Client) RenameDirectory(Path string) error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/fileservice/"+Path, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
 	return nil
 }
