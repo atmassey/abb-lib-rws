@@ -6,9 +6,10 @@ import (
 	"net/http"
 )
 
+// GetIOSignals returns a struct of all IO signals on the robot with their names and values.
 func (c *Client) GetIOSignals() (*IOSignals, error) {
 	var signals IOSignals
-	var signals_raw IOSignalsJson
+	var signalsRaw IOSignalsJson
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/iosystem/signals", nil)
 	if err != nil {
@@ -24,12 +25,12 @@ func (c *Client) GetIOSignals() (*IOSignals, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	err = json.NewDecoder(resp.Body).Decode(&signals_raw)
+	err = json.NewDecoder(resp.Body).Decode(&signalsRaw)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	for _, signal := range signals_raw.Embedded.State {
+	for _, signal := range signalsRaw.Embedded.State {
 		signals.SignalName = append(signals.SignalName, signal.Name)
 		signals.SignalType = append(signals.SignalType, signal.Type)
 		signals.SignalValue = append(signals.SignalValue, signal.Value)

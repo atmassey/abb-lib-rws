@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// Get a list of users from the controller
+// GetUsers gets a list of users from the controller
 func (c *Client) GetUsers() (*UserResources, error) {
 	var users UserResources
 	c.DigestAuthenticate()

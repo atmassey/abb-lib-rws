@@ -8,7 +8,7 @@ import (
 )
 
 // CreateBackup creates a backup of the controller to a specified directory.
-// The backup path show include the enviorment variable along with the directory.
+// The backup path show include the environment variable along with the directory.
 // Example: /$TEMP/my_backup_directory
 func (c *Client) CreateBackup(Dir string) error {
 	body := url.Values{}

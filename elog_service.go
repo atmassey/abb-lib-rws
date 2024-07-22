@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-// Dumps elog file to the specified path on the controller.
+// SaveElogSystemDump dumps log file to the specified path on the controller.
 // Example path: $HOME/my_dump_file.txt
 func (c *Client) SaveElogSystemDump(Path string) error {
 	body := url.Values{}

@@ -21,11 +21,11 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	resources_raw, err := io.ReadAll(resp.Body)
+	resourcesRaw, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	err = xml.Unmarshal(resources_raw, &ControllerResources)
+	err = xml.Unmarshal(resourcesRaw, &ControllerResources)
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +33,10 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	return &ControllerResources, nil
 }
 
-// Returns the actions that can be performed on the controller
+// GetControllerActions returns the actions that can be performed on the controller
 func (c *Client) GetControllerActions() (*ControllerActions, error) {
 	var actions ControllerActionsHTML
-	var actions_struct ControllerActions
+	var actionsStruct ControllerActions
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/ctrl", nil)
 	if err != nil {
@@ -52,17 +52,17 @@ func (c *Client) GetControllerActions() (*ControllerActions, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	actions_raw, err := io.ReadAll(resp.Body)
+	actionsRaw, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	err = xml.Unmarshal(actions_raw, &actions)
+	err = xml.Unmarshal(actionsRaw, &actions)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 	for _, option := range actions.Body.Div.Select.Options {
-		actions_struct.Actions = append(actions_struct.Actions, option.Value)
+		actionsStruct.Actions = append(actionsStruct.Actions, option.Value)
 	}
-	return &actions_struct, nil
+	return &actionsStruct, nil
 }

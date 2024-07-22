@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-// Restart the controller with any of the following actions: restart | istart | pstart | bstart
+// RestartController will restart the controller with any of the following actions: restart | istart | pstart | bstart
 // CAUTION: A restart will restart the controller and all running programs will be stopped. (Warmstart)
 // CAUTION: A "istart" will restart the controller and factory reset the controller.
 // CAUTION: A "pstart" will restart the controller and delete all rapid programs but keep all configuration data.
