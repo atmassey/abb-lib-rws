@@ -1,7 +1,7 @@
 # ABB Robot Web Service API Wrapper
 
-[![Build and Test](https://github.com/atmassey/abb-lib-rws/blob/main/.github/workflows/go.yml/badge.svg)](https://github.com/atmassey/abb-lib-rws/blob/main/.github/workflows/go.yml)
-[![golangci-lint](https://github.com/atmassey/abb-lib-rws/blob/main/.github/workflows/golangci-lint.yml/badge.svg)](https://github.com/atmassey/abb-lib-rws/blob/main/.github/workflows/golangci-lint.yml)
+[![Build and Test](https://github.com/atmassey/abb-lib-rws/actions/workflows/go.yml/badge.svg)](https://github.com/atmassey/abb-lib-rws/actions/workflows/go.yml)
+[![golangci-lint](https://github.com/atmassey/abb-lib-rws/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/atmassey/abb-lib-rws/actions/workflows/golangci-lint.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Go package for [ABB Robot Web Service API](https://developercenter.robotstudio.com/api/rwsApi/index.html)
