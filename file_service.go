@@ -132,7 +132,7 @@ func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 }
 
 // RenameDirectory will rename a directory at the given path.
-// Example path: $TEMP/test
+// Example OldPath: $TEMP/test_dir Example NewName: new_dir
 func (c *Client) RenameDirectory(OldPath string, NewName string) error {
 	body := url.Values{}
 	body.Add("fs-newname", NewName)
