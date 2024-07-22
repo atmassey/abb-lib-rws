@@ -133,12 +133,16 @@ func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 
 // RenameDirectory will rename a directory at the given path.
 // Example path: $TEMP/test
-func (c *Client) RenameDirectory(Path string) error {
+func (c *Client) RenameDirectory(OldPath string, NewName string) error {
+	body := url.Values{}
+	body.Add("fs-newname", NewName)
+	body.Add("fs-action", "rename")
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("POST", "http://"+c.Host+"/fileservice/"+Path, nil)
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/fileservice/"+OldPath, bytes.NewBufferString(body.Encode()))
 	if err != nil {
 		return err
 	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		return err
