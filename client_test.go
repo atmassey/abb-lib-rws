@@ -299,3 +299,45 @@ func TestGetIOSignalsJson(t *testing.T) {
 		fmt.Printf("Signal: %s, Type: %s, Value: %v\n", signal, signals.SignalType[i], signals.SignalValue[i])
 	}
 }
+
+func TestGetMechUnit(t *testing.T) {
+	mechUnits := MechUnitsJson{}
+	mechUnitsDecoded := MechUnits{}
+	//sample response from the api documentation
+	data := `{
+    "_links": {
+        "base": {
+            "href": "http://10.40.36.102:80/rw/motionsystem/"
+        }
+    },
+    "_embedded": {
+        "_state": [
+            {
+                "_type": "ms-mechunit-li",
+                "_title": "ROB_1",
+                "_links": {
+                    "self": {
+                        "href": "mechunits/ROB_1?json=1"
+                    }
+                },
+                "mode": "Activated",
+                "activation-allowed": "True",
+                "drive-module": "0"
+            }
+        ]
+    }
+}`
+	err := json.Unmarshal([]byte(data), &mechUnits)
+	if err != nil {
+		t.Errorf("Error decoding response: %s", err)
+	}
+	for _, mechUnit := range mechUnits.Embedded.State {
+		mechUnitsDecoded.ActivationAllowed = append(mechUnitsDecoded.ActivationAllowed, mechUnit.ActivationAllowed)
+		mechUnitsDecoded.DriveModule = append(mechUnitsDecoded.DriveModule, mechUnit.DriveModule)
+		mechUnitsDecoded.Mode = append(mechUnitsDecoded.Mode, mechUnit.Mode)
+		mechUnitsDecoded.Title = append(mechUnitsDecoded.Title, mechUnit.Title)
+	}
+	for i, unit := range mechUnitsDecoded.Title {
+		fmt.Printf("Title: %s, Mode: %s, Activation Allowed: %s, Drive Module: %s\n", unit, mechUnitsDecoded.Mode[i], mechUnitsDecoded.ActivationAllowed[i], mechUnitsDecoded.DriveModule[i])
+	}
+}

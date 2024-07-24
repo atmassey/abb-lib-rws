@@ -307,3 +307,44 @@ type IOSignals struct {
 	SignalType  []string
 	SignalValue []int
 }
+
+type MechUnits struct {
+	Title             []string
+	Mode              []string
+	DriveModule       []string
+	ActivationAllowed []string
+}
+
+type MechUnitsJson struct {
+	Links    MechUnitsJsonLinks `json:"_links"`
+	Embedded MechUnitsJsonState `json:"_embedded"`
+}
+
+type MechUnitsJsonLinks struct {
+	Base MechUnitsJsonBase `json:"base"`
+}
+
+type MechUnitsJsonBase struct {
+	Href string `json:"href"`
+}
+
+type MechUnitsJsonState struct {
+	State []MechUnitsJsonMeta `json:"_state"`
+}
+
+type MechUnitsJsonMeta struct {
+	Type              string                 `json:"_type"`
+	Title             string                 `json:"_title"`
+	Links             MechUnitsJsonMetaLinks `json:"_links"`
+	Mode              string                 `json:"mode"`
+	ActivationAllowed string                 `json:"activation-allowed"`
+	DriveModule       string                 `json:"drive-module"`
+}
+
+type MechUnitsJsonMetaLinks struct {
+	Self MechUnitsJsonMetaLinksSelf `json:"self"`
+}
+
+type MechUnitsJsonMetaLinksSelf struct {
+	Href string `json:"href"`
+}
