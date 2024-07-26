@@ -64,7 +64,7 @@ func GetDirectoryTree(remoteDir string, localDir string) error {
 		User:     "Default User",
 		Password: "robotics",
 	}
-	server := "10.40.36.102"
+	server := "localhost"
 
 	client, err := goftp.DialConfig(config, server)
 	if err != nil {
