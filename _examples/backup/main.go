@@ -10,4 +10,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	err = GetDirectoryTree("hd0a/TEMP/my_test_directory", "./test")
+	if err != nil {
+		panic(err)
+	}
 }
