@@ -75,5 +75,9 @@ func GetDirectoryTree(remoteDir string, localDir string) error {
 	if err != nil {
 		return err
 	}
+	err = client.Close()
+	if err != nil {
+		return err
+	}
 	return nil
 }
