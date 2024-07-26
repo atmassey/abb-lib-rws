@@ -1,32 +1,18 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"time"
 
-	"github.com/secsy/goftp"
+	"github.com/jlaffaye/ftp"
 )
 
-func downloadFile(client *goftp.Client, remoteFile, localFile string) error {
-	// Create the local file
-	outFile, err := os.Create(localFile)
-	if err != nil {
-		return err
-	}
-	defer outFile.Close()
-
-	// Download the remote file
-	err = client.Retrieve(remoteFile, outFile)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func downloadDir(client *goftp.Client, remoteDir, localDir string) error {
+func downloadDir(client *ftp.ServerConn, remoteDir, localDir string) error {
 	// List files and directories in the remote directory
-	entries, err := client.ReadDir(remoteDir)
+	entries, err := client.List(remoteDir)
 	if err != nil {
 		return err
 	}
@@ -38,10 +24,10 @@ func downloadDir(client *goftp.Client, remoteDir, localDir string) error {
 	}
 
 	for _, entry := range entries {
-		remotePath := filepath.Join(remoteDir, entry.Name())
-		localPath := filepath.Join(localDir, entry.Name())
+		remotePath := filepath.Join(remoteDir, entry.Name)
+		localPath := filepath.Join(localDir, entry.Name)
 
-		if entry.IsDir() {
+		if entry.Type == ftp.EntryTypeFolder {
 			// Recursively download the subdirectory
 			err := downloadDir(client, remotePath, localPath)
 			if err != nil {
@@ -59,25 +45,57 @@ func downloadDir(client *goftp.Client, remoteDir, localDir string) error {
 	return nil
 }
 
-func GetDirectoryTree(remoteDir string, localDir string) error {
-	config := goftp.Config{
-		User:     "Default User",
-		Password: "robotics",
+func downloadFile(client *ftp.ServerConn, remoteFile, localFile string) error {
+	// Retrieve the remote file
+	resp, err := client.Retr(remoteFile)
+	if err != nil {
+		return err
 	}
-	server := "localhost"
+	defer resp.Close()
 
-	client, err := goftp.DialConfig(config, server)
+	// Create the local file
+	outFile, err := os.Create(localFile)
+	if err != nil {
+		return err
+	}
+	defer outFile.Close()
+
+	// Copy the file contents to the local file
+	_, err = io.Copy(outFile, resp)
 	if err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func GetDirectoryTree(remoteDir string, localDir string) error {
+	// FTP server details
+	ftpServer := "localhost:21"
+	username := "Default User"
+	password := "robotics"
+
+	// Connect to the FTP server
+	client, err := ftp.Dial(ftpServer, ftp.DialWithTimeout(5*time.Second))
+	if err != nil {
+		fmt.Println("Error connecting to FTP server:", err)
+		return err
+	}
+	defer client.Quit()
+
+	// Login to the FTP server
+	err = client.Login(username, password)
+	if err != nil {
+		fmt.Println("Error logging in to FTP server:", err)
+		return err
+	}
+
+	// Download the directory tree
 	err = downloadDir(client, remoteDir, localDir)
 	if err != nil {
-		return err
+		fmt.Println("Error downloading directory:", err)
 	}
-	err = client.Close()
-	if err != nil {
-		return err
-	}
+
+	fmt.Println("Download completed successfully")
 	return nil
 }
