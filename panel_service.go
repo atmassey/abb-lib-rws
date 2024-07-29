@@ -14,6 +14,10 @@ import (
 // CAUTION: A "pstart" will restart the controller and delete all rapid programs but keep all configuration data.
 // CAUTION: A "bstart" will restart the controller and revert it to its last auto-saved state.
 func (c *Client) RestartController(Action string) error {
+	PossibleActions := []string{"restart", "istart", "pstart", "bstart"}
+	if !stringInSlice(Action, PossibleActions) {
+		return fmt.Errorf("invalid action: %s", Action)
+	}
 	body := url.Values{}
 	body.Add("restart-mode", Action)
 	c.Client = c.DigestAuthenticate()

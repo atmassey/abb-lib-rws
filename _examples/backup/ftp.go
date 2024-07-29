@@ -10,6 +10,7 @@ import (
 	"github.com/jlaffaye/ftp"
 )
 
+// recursively download directories and files from the FTP server
 func downloadDir(client *ftp.ServerConn, remoteDir, localDir string) error {
 	// List files and directories in the remote directory
 	entries, err := client.List(remoteDir)
@@ -45,6 +46,7 @@ func downloadDir(client *ftp.ServerConn, remoteDir, localDir string) error {
 	return nil
 }
 
+// download a file from the FTP server
 func downloadFile(client *ftp.ServerConn, remoteFile, localFile string) error {
 	// Retrieve the remote file
 	resp, err := client.Retr(remoteFile)
