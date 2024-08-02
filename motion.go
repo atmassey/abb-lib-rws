@@ -57,7 +57,7 @@ func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 	if err != nil {
 		return err
 	}
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status: %s", resp.Status)
 	}
 	defer resp.Body.Close()
