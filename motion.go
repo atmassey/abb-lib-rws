@@ -7,6 +7,7 @@ import (
 	"net/url"
 )
 
+// GetMechUnits returns a list of all the mechunits on the robot controller
 func (c *Client) GetMechUnits() (*MechUnits, error) {
 	mechUnits := MechUnitsJson{}
 	mechUnitsDecoded := MechUnits{}
@@ -39,6 +40,8 @@ func (c *Client) GetMechUnits() (*MechUnits, error) {
 	return &mechUnitsDecoded, nil
 }
 
+// ClearSMBData clears the SMB data for a specific mechunit
+// type_ can be either "robot" or "controller"
 func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 	body := url.Values{}
 	body.Add("type", type_)
