@@ -91,3 +91,31 @@ func (c *Client) SetControllerLanguage(language string) error {
 	defer resp.Body.Close()
 	return nil
 }
+
+// CompressionResource will compress or decompress a file a give path
+// comp must be either "comp" for compression or "dcomp" for decompression
+func (c *Client) CompressionResource(srchpath string, dstpath string, comp string) error {
+	body := url.Values{}
+	body.Add("srcpath", srchpath)
+	body.Add("dstpath", dstpath)
+	if comp != "comp" && comp != "dcomp" {
+		return fmt.Errorf("invalid compression type: %s", comp)
+	}
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/compress", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", comp)
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusAccepted {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	return nil
+}
