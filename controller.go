@@ -94,9 +94,9 @@ func (c *Client) SetControllerLanguage(language string) error {
 
 // CompressionResource will compress or decompress a file a give path
 // comp must be either "comp" for compression or "dcomp" for decompression
-func (c *Client) CompressionResource(srchpath string, dstpath string, comp string) error {
+func (c *Client) CompressionResource(srcpath string, dstpath string, comp string) error {
 	body := url.Values{}
-	body.Add("srcpath", srchpath)
+	body.Add("srcpath", srcpath)
 	body.Add("dstpath", dstpath)
 	if comp != "comp" && comp != "dcomp" {
 		return fmt.Errorf("invalid compression type: %s", comp)
