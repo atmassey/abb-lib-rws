@@ -348,3 +348,32 @@ type MechUnitsJsonMetaLinks struct {
 type MechUnitsJsonMetaLinksSelf struct {
 	Href string `json:"href"`
 }
+
+type MotionErrorStateJson struct {
+	Links    MotionErrorStateJsonLinks `json:"_links"`
+	Embedded MotionErrorStateJsonState `json:"_embedded"`
+}
+
+type MotionErrorStateJsonLinks struct {
+	Base MotionErrorStateJsonBase `json:"base"`
+}
+
+type MotionErrorStateJsonBase struct {
+	Href string `json:"href"`
+}
+
+type MotionErrorStateJsonState struct {
+	State []MotionErrorStateJsonMeta `json:"_state"`
+}
+
+type MotionErrorStateJsonMeta struct {
+	Type  string `json:"_type"`
+	Title string `json:"_title"`
+	State string `json:"err-state"`
+	Count string `json:"err-count"`
+}
+
+type MotionErrorState struct {
+	State []string
+	Count []string
+}

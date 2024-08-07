@@ -12,7 +12,7 @@ func (c *Client) GetMechUnits() (*MechUnits, error) {
 	mechUnits := MechUnitsJson{}
 	mechUnitsDecoded := MechUnits{}
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("GET", c.Host+"/rw/motionsystem/mechunits", nil)
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/motionsystem/mechunits", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 		return fmt.Errorf("invalid type: %s", type_)
 	}
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("POST", c.Host+"/rw/motionsystem/mechunits/"+MechUnit+"/smbdata", nil)
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/mechunits/"+MechUnit+"/smbdata", nil)
 	if err != nil {
 		return err
 	}
@@ -65,4 +65,34 @@ func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 	}
 	defer resp.Body.Close()
 	return nil
+}
+
+func (c *Client) GetErrorState() (*MotionErrorState, error) {
+	var motionErrorState MotionErrorStateJson
+	var motionErrorStateDecoded MotionErrorState
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/motionsystem/errorstate", nil)
+	if err != nil {
+		return nil, err
+	}
+	q := req.URL.Query()
+	q.Add("json", "1")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("HTTP Status: %s", resp.Status)
+	}
+	err = json.NewDecoder(resp.Body).Decode(&motionErrorState)
+	if err != nil {
+		return nil, err
+	}
+	for _, motionError := range motionErrorState.Embedded.State {
+		motionErrorStateDecoded.State = append(motionErrorStateDecoded.State, motionError.State)
+		motionErrorStateDecoded.Count = append(motionErrorStateDecoded.Count, motionError.Count)
+	}
+	defer resp.Body.Close()
+	return &motionErrorStateDecoded, nil
 }
