@@ -114,7 +114,7 @@ func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 	if err != nil {
 		return err
 	}
-	defer closeErrorCheck(file)
+	defer closeFileCheck(file)
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("PUT", "http://"+c.Host+"/fileservice/"+DestPath+"/"+file.Name(), file)
 	if err != nil {
