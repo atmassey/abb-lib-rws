@@ -154,6 +154,7 @@ func (c *Client) RenameDirectory(OldPath string, NewName string) error {
 	return nil
 }
 
+// CopyDirestory will make a copy of a directory to a given location.
 func (c *Client) CopyDirectory(SourcePath string, DestPath string, Overwrite bool) error {
 	body := url.Values{}
 	body.Add("fs-newname", DestPath)
