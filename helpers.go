@@ -1,6 +1,10 @@
 package abb
 
-import "strings"
+import (
+	"fmt"
+	"io"
+	"strings"
+)
 
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
@@ -9,4 +13,10 @@ func stringInSlice(a string, list []string) bool {
 		}
 	}
 	return false
+}
+
+func closeErrorCheck(c io.Closer) {
+	if err := c.Close(); err != nil {
+		fmt.Println(err)
+	}
 }

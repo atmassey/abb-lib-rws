@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 )
 
 // DeleteDirectory delete a directory on the controller.
@@ -25,7 +26,7 @@ func (c *Client) DeleteDirectory(Path string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -49,7 +50,7 @@ func (c *Client) CreateDirectory(Env string, Dir string) error {
 	if resp.StatusCode != http.StatusCreated {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -80,7 +81,7 @@ func (c *Client) GetFile(Source string, Filename string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -100,7 +101,7 @@ func (c *Client) DeleteFile(Path string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -113,7 +114,7 @@ func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer closeErrorCheck(file)
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("PUT", "http://"+c.Host+"/fileservice/"+DestPath+"/"+file.Name(), file)
 	if err != nil {
@@ -127,7 +128,7 @@ func (c *Client) UploadFile(SourcePath string, DestPath string) error {
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -150,5 +151,27 @@ func (c *Client) RenameDirectory(OldPath string, NewName string) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
+	return nil
+}
+
+func (c *Client) CopyDirectory(SourcePath string, DestPath string, Overwrite bool) error {
+	body := url.Values{}
+	body.Add("fs-newname", DestPath)
+	body.Add("fs-action", "copy")
+	body.Add("fs-overwrite", strconv.FormatBool(Overwrite))
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/fileservice/"+SourcePath, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
