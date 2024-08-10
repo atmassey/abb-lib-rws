@@ -31,7 +31,7 @@ func (c *Client) GetRobotType() (*RobotType, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return &robotType, nil
 }
 
@@ -56,7 +56,7 @@ func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	err = json.NewDecoder(resp.Body).Decode(&EnergyMetricsRaw)
 	if err != nil {
 		return nil, err
@@ -93,7 +93,7 @@ func (c *Client) GetInstalledProducts() (*InstalledSystemProducts, error) {
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	err = json.NewDecoder(resp.Body).Decode(&InstalledProducts)
 	if err != nil {
 		return nil, err

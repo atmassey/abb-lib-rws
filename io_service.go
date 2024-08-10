@@ -29,7 +29,7 @@ func (c *Client) GetIOSignals() (*IOSignals, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	for _, signal := range signalsRaw.Embedded.State {
 		signals.SignalName = append(signals.SignalName, signal.Name)
 		signals.SignalType = append(signals.SignalType, signal.Type)

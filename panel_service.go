@@ -36,7 +36,7 @@ func (c *Client) RestartController(Action string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -59,7 +59,7 @@ func (c *Client) GetOperationMode() (string, error) {
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	err = json.NewDecoder(resp.Body).Decode(&opmode)
 	if err != nil {
 		return "", err

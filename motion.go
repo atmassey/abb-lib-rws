@@ -36,7 +36,7 @@ func (c *Client) GetMechUnits() (*MechUnits, error) {
 		mechUnitsDecoded.Mode = append(mechUnitsDecoded.Mode, mechUnit.Mode)
 		mechUnitsDecoded.Title = append(mechUnitsDecoded.Title, mechUnit.Title)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return &mechUnitsDecoded, nil
 }
 
@@ -63,7 +63,7 @@ func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status: %s", resp.Status)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -93,6 +93,6 @@ func (c *Client) GetErrorState() (*MotionErrorState, error) {
 		motionErrorStateDecoded.State = append(motionErrorStateDecoded.State, motionError.State)
 		motionErrorStateDecoded.Count = append(motionErrorStateDecoded.Count, motionError.Count)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return &motionErrorStateDecoded, nil
 }

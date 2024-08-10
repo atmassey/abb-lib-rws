@@ -30,7 +30,7 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return &ControllerResources, nil
 }
 
@@ -61,7 +61,7 @@ func (c *Client) GetControllerActions() (*ControllerActions, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	for _, option := range actions.Body.Div.Select.Options {
 		actionsStruct.Actions = append(actionsStruct.Actions, option.Value)
 	}
@@ -88,7 +88,7 @@ func (c *Client) SetControllerLanguage(language string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -116,6 +116,6 @@ func (c *Client) CompressionResource(srcpath string, dstpath string, comp string
 	if resp.StatusCode != http.StatusAccepted {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return nil
 }

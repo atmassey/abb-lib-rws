@@ -26,7 +26,7 @@ func (c *Client) DeleteDirectory(Path string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	closeErrorCheck(resp.Body)
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -50,7 +50,7 @@ func (c *Client) CreateDirectory(Env string, Dir string) error {
 	if resp.StatusCode != http.StatusCreated {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	closeErrorCheck(resp.Body)
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -81,7 +81,7 @@ func (c *Client) GetFile(Source string, Filename string) error {
 	if err != nil {
 		return err
 	}
-	closeErrorCheck(resp.Body)
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 
@@ -101,7 +101,7 @@ func (c *Client) DeleteFile(Path string) error {
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	closeErrorCheck(resp.Body)
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
 

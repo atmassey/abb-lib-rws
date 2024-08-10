@@ -30,6 +30,6 @@ func (c *Client) GetUsers() (*UserResources, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return &users, nil
 }

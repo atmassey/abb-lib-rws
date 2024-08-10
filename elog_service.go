@@ -28,6 +28,6 @@ func (c *Client) SaveElogSystemDump(Path string) error {
 	if resp.StatusCode != http.StatusAccepted {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
-	defer resp.Body.Close()
+	defer closeErrorCheck(resp.Body)
 	return nil
 }
