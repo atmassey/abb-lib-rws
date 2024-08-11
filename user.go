@@ -38,6 +38,7 @@ func (c *Client) GetUsers() (*UserResources, error) {
 
 // LoginAsLocalUser A client is normally logged in as a remote client. To login as local client it needs access to an enabling device.
 // To successfully login as local user, the client should make the request and within 5 seconds press and release the enabling button.
+// Accepted types are local or remote.
 func (c *Client) LoginAsLocalUser(Type_ string) error {
 	if Type_ != "local" && Type_ != "remote" {
 		return fmt.Errorf("invalid type %s", Type_)
