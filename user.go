@@ -36,6 +36,8 @@ func (c *Client) GetUsers() (*UserResources, error) {
 	return &users, nil
 }
 
+// LoginAsLocalUser A client is normally logged in as a remote client. To login as local client it needs access to an enabling device.
+// To successfully login as local user, the client should make the request and within 5 seconds press and release the enabling button.
 func (c *Client) LoginAsLocalUser(Type_ string) error {
 	body := url.Values{}
 	body.Add("type", Type_)
