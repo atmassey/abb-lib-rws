@@ -53,14 +53,14 @@ func downloadFile(client *ftp.ServerConn, remoteFile, localFile string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Close()
+	defer closeRespWithErrorCheck(resp)
 
 	// Create the local file
 	outFile, err := os.Create(localFile)
 	if err != nil {
 		return err
 	}
-	defer outFile.Close()
+	defer closeFileWithErrorCheck(outFile)
 
 	// Copy the file contents to the local file
 	_, err = io.Copy(outFile, resp)
@@ -83,7 +83,7 @@ func GetDirectoryTree(remoteDir string, localDir string) error {
 		fmt.Println("Error connecting to FTP server:", err)
 		return err
 	}
-	defer client.Quit()
+	defer closeConnWithErrorCheck(client)
 
 	// Login to the FTP server
 	err = client.Login(username, password)
