@@ -73,7 +73,7 @@ package main
 
 import (
 	"fmt"
-	
+
 	"github.com/atmassey/abb-lib-rws"
 )
 
@@ -84,8 +84,8 @@ func main() {
 		panic(err)
 	}
 	for i, name := range signals.SignalName {
-		fmt.Printf("Name: %s, Type: %s, Value: %s\n", name,
-			 signals_struct.SignalType[i], signals_struct.SignalValue[i])
+		fmt.Printf("Name: %s, Type: %s, Value: %v\n", name,
+			signals.SignalType[i], signals.SignalValue[i])
 	}
 }
 
