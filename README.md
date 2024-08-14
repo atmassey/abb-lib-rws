@@ -7,7 +7,7 @@
 
 Go package for [ABB Robot Web Service API](https://developercenter.robotstudio.com/api/RWS)
 
-<img src="https://github.com/atmassey/abb-lib-rws/blob/main/docs/rws.png?raw=true" alt="Robot Web Service API Wrapper" width="350" height="350">
+<img src="https://github.com/atmassey/abb-lib-rws/blob/main/docs/rws_image.png?raw=true" alt="Robot Web Service API Wrapper" width="350" height="350">
 
 ## ABB Robot Option Requirement
 
