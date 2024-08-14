@@ -63,13 +63,15 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 	for _, c := range header {
 		if c.Name == "-http-session-" {
 			session = c.Value
+			fmt.Println("Session: ", session)
 		} else if c.Name == "ABBCX" {
 			session_ab = c.Value
+			fmt.Println("Session AB: ", session_ab)
 		}
 	}
-	requestHeader := http.Header{
-		"Cookie": []string{"-http-session-=" + session + "; ABBCX=" + session_ab},
-	}
+	requestHeader := http.Header{}
+	requestHeader.Add("Cookie", "-http-session-="+session+"; ABBCX="+session_ab)
+	fmt.Printf("header: %v\n", requestHeader)
 	conn, _, err := websocket.DefaultDialer.Dial(ws_url, requestHeader)
 	if err != nil {
 		return nil, err
