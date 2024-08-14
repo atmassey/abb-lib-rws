@@ -40,8 +40,8 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 	string_id := strconv.Itoa(ResourceId)
 	string_priority := strconv.Itoa(Priority)
 	body := url.Values{}
-	body.Add("resourceId", string_id)
-	body.Add(string_id, "/rw/elog"+string_id)
+	body.Add("resources", string_id)
+	body.Add(string_id, "/rw/elog/"+string_id)
 	body.Add(string_id+"-p", string_priority)
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
@@ -58,7 +58,19 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	ws_url := resp.Header.Get("Location")
-	conn, _, err := websocket.DefaultDialer.Dial(ws_url, nil)
+	header := resp.Cookies()
+	var session, session_ab string
+	for _, c := range header {
+		if c.Name == "-http-session-" {
+			session = c.Value
+		} else if c.Name == "ABBCX" {
+			session_ab = c.Value
+		}
+	}
+	requestHeader := http.Header{
+		"Cookie": []string{"-http-session-=" + session + "; ABBCX=" + session_ab},
+	}
+	conn, _, err := websocket.DefaultDialer.Dial(ws_url, requestHeader)
 	if err != nil {
 		return nil, err
 	}
@@ -73,9 +85,8 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 			if err != nil {
 				return
 			}
-			fmt.Println(string(message))
+			returnChannel <- string(message)
 		}
 	}()
-
 	return returnChannel, nil
 }
