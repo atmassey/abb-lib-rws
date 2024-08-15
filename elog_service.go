@@ -70,8 +70,11 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 		}
 	}
 	requestHeader := http.Header{}
-	requestHeader.Add("Cookie", "-http-session-="+session+"; ABBCX="+session_ab)
-	fmt.Printf("header: %v\n", requestHeader)
+	cookie1 := &http.Cookie{Name: "-http-session-", Value: session}
+	cookie2 := &http.Cookie{Name: "ABBCX", Value: session_ab}
+	requestHeader.Add("Cookie", cookie1.String())
+	requestHeader.Add("Cookie", cookie2.String())
+
 	conn, _, err := websocket.DefaultDialer.Dial(ws_url, requestHeader)
 	if err != nil {
 		return nil, err
