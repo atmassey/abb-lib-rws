@@ -354,7 +354,10 @@ func TestElog(t *testing.T) {
 			if !ok {
 				return
 			}
-			fmt.Println(message)
+			for _, msg := range message.Body.Div.List.Spans {
+				fmt.Printf("Message Class: %s\n Message Text: %s\n", msg.Class, msg.Text)
+			}
+
 		}
 	}
 }

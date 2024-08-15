@@ -2,6 +2,7 @@ package abb
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -37,8 +38,8 @@ func (c *Client) SaveElogSystemDump(Path string) error {
 	return nil
 }
 
-func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, error) {
-	returnChannel := make(chan string)
+func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan ElogXML, error) {
+	returnChannel := make(chan ElogXML)
 	string_id := strconv.Itoa(ResourceId)
 	string_priority := strconv.Itoa(Priority)
 	body := url.Values{}
@@ -96,8 +97,14 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 				fmt.Printf("Error reading message: %v\n", err)
 				return
 			}
+			MessageXML := ElogXML{}
 			fmt.Printf("Received message: %s\n", message)
-			returnChannel <- string(message)
+			err = xml.Unmarshal(message, &MessageXML)
+			if err != nil {
+				fmt.Printf("Error unmarshalling message: %v\n", err)
+				return
+			}
+			returnChannel <- MessageXML
 		}
 	}()
 	return returnChannel, nil

@@ -377,3 +377,44 @@ type MotionErrorState struct {
 	State []string
 	Count []string
 }
+
+type ElogXML struct {
+	XMLName xml.Name `xml:"html"`
+	Head    ElogHead `xml:"head"`
+	Body    ElogBody `xml:"body"`
+}
+
+type ElogHead struct {
+	Title string `xml:"title"`
+}
+
+type ElogBody struct {
+	Div ElogDiv `xml:"div"`
+}
+
+type ElogDiv struct {
+	Class string   `xml:"class,attr"`
+	Link  ElogLink `xml:"a"`
+	List  ElogList `xml:"ul>li"`
+}
+
+type ElogLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+}
+
+type ElogList struct {
+	Class string     `xml:"class,attr"`
+	Title string     `xml:"title,attr"`
+	Spans []ElogSpan `xml:"span"`
+}
+
+type ElogSpan struct {
+	Class string `xml:"class,attr"`
+	Text  string `xml:",chardata"`
+}
+
+type ElogMessages struct {
+	MessageName []string
+	MessageText []string
+}
