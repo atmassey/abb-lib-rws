@@ -81,18 +81,22 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 	if err != nil {
 		return nil, err
 	}
-	defer closeWSCheck(conn)
+	fmt.Println("Connected to websocket")
 	go func() {
 		defer func() {
+			fmt.Printf("Closing connection\n")
 			conn.Close()
+			close(returnChannel)
 		}()
 		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
 		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {
+				fmt.Printf("Error reading message: %v\n", err)
 				return
 			}
+			fmt.Printf("Received message: %s\n", message)
 			returnChannel <- string(message)
 		}
 	}()
