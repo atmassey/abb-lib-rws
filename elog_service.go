@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -72,9 +74,9 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 	requestHeader := http.Header{}
 	cookie1 := &http.Cookie{Name: "-http-session-", Value: session}
 	cookie2 := &http.Cookie{Name: "ABBCX", Value: session_ab}
-	requestHeader.Add("Cookie", cookie1.String())
-	requestHeader.Add("Cookie", cookie2.String())
-
+	requestHeader.Add("Cookie", cookie1.String()+"; "+cookie2.String())
+	requestHeader.Add("Origin", strings.Split(ws_url, "/poll")[0])
+	requestHeader.Add("Sec-WebSocket-Protocol", "robapi2_subscription")
 	conn, _, err := websocket.DefaultDialer.Dial(ws_url, requestHeader)
 	if err != nil {
 		return nil, err
@@ -82,9 +84,10 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan string, err
 	defer closeWSCheck(conn)
 	go func() {
 		defer func() {
-			closeWSCheck(conn)
+			conn.Close()
 		}()
-
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {
