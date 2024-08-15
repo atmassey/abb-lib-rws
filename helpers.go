@@ -5,8 +5,6 @@ import (
 	"io"
 	"os"
 	"strings"
-
-	"github.com/gorilla/websocket"
 )
 
 func stringInSlice(a string, list []string) bool {
@@ -26,12 +24,6 @@ func closeErrorCheck(c io.Closer) {
 
 func closeFileCheck(f *os.File) {
 	if err := f.Close(); err != nil {
-		fmt.Println(err)
-	}
-}
-
-func closeWSCheck(ws *websocket.Conn) {
-	if err := ws.Close(); err != nil {
 		fmt.Println(err)
 	}
 }
