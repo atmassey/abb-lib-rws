@@ -341,20 +341,3 @@ func TestGetMechUnit(t *testing.T) {
 		fmt.Printf("Title: %s, Mode: %s, Activation Allowed: %s, Drive Module: %s\n", unit, mechUnitsDecoded.Mode[i], mechUnitsDecoded.ActivationAllowed[i], mechUnitsDecoded.DriveModule[i])
 	}
 }
-
-func TestElog(t *testing.T) {
-	client := NewClient("localhost", "Default User", "robotics")
-	log, err := client.SubscribeToElog(0, 1)
-	if err != nil {
-		t.Error(err)
-	}
-	for {
-		select {
-		case message, ok := <-log:
-			if !ok {
-				return
-			}
-			fmt.Printf("\nMessage: %v", message)
-		}
-	}
-}

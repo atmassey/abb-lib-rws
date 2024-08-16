@@ -67,8 +67,8 @@ func (c *Client) getElogMessages(Endpoint string) (*ElogMessagesXML, error) {
 	return &messages, nil
 }
 
-func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan ElogXML, error) {
-	returnChannel := make(chan ElogXML)
+func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan map[string]string, error) {
+	returnChannel := make(chan map[string]string)
 	string_id := strconv.Itoa(ResourceId)
 	string_priority := strconv.Itoa(Priority)
 	body := url.Values{}
@@ -123,23 +123,23 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan ElogXML, er
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {
-				fmt.Printf("Error reading message: %v\n", err)
 				return
 			}
 			MessageXML := ElogXML{}
-			fmt.Printf("Received message: %s\n", message)
 			err = xml.Unmarshal(message, &MessageXML)
 			if err != nil {
-				fmt.Printf("Error unmarshalling message: %v\n", err)
 				return
 			}
 			endpoint := MessageXML.Body.Div.List.Endpoint.Href
 			msg, err := c.getElogMessages(endpoint)
 			if err != nil {
-				fmt.Printf("Error: %v", err)
+				continue
 			}
-			fmt.Printf("Get Message: %v", msg)
-			returnChannel <- MessageXML
+			mapString := make(map[string]string)
+			for _, m := range msg.Body.Div.List.Span {
+				mapString[m.Class] = m.Text
+			}
+			returnChannel <- mapString
 		}
 	}()
 	return returnChannel, nil
