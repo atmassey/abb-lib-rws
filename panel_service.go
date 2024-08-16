@@ -76,7 +76,11 @@ func (c *Client) GetOperationMode() (string, error) {
 	return mode, nil
 }
 
-func (c *Client) SubscribeToPanel() (chan map[string]string, error) {
+// SubscribeToControllerState is subscribed to the controller state websocket
+// that will send an update anytime the controller state changes.
+// The map key returned is mapString["state"].
+// Possible states are {init | motoron | motoroff | guardstop | emergencystop | emergencystopreset | sysfail}
+func (c *Client) SubscribeToControllerState() (chan map[string]string, error) {
 	returnChannel := make(chan map[string]string)
 	body := url.Values{}
 	body.Add("resources", "1")
@@ -116,7 +120,6 @@ func (c *Client) SubscribeToPanel() (chan map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	go func() {
 		defer func() {
 			conn.Close()
@@ -136,6 +139,75 @@ func (c *Client) SubscribeToPanel() (chan map[string]string, error) {
 			}
 			mapString := make(map[string]string)
 			mapString["state"] = MessageXML.Body.Div.List.Span.Text
+			returnChannel <- mapString
+		}
+	}()
+	return returnChannel, nil
+}
+
+// SubscribeToOperationMode is subscribed to the operation mode websocket
+// that will send an update anytime the operation mode changes.
+// The map key returned is mapString["mode"].
+// Possible states are {INIT | AUTO_CH | MANF_CH | MANR | MANF | AUTO | UNDEF}
+func (c *Client) SubscribeToOperationMode() (chan map[string]string, error) {
+	returnChannel := make(chan map[string]string)
+	body := url.Values{}
+	body.Add("resources", "1")
+	body.Add("1", "/rw/panel/opmode")
+	body.Add("1-p", "0")
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer closeErrorCheck(resp.Body)
+	if resp.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	ws_url := resp.Header.Get("Location")
+	header := resp.Cookies()
+	var session, session_ab string
+	for _, c := range header {
+		if c.Name == "-http-session-" {
+			session = c.Value
+		} else if c.Name == "ABBCX" {
+			session_ab = c.Value
+		}
+	}
+	requestHeader := http.Header{}
+	cookie1 := &http.Cookie{Name: "-http-session-", Value: session}
+	cookie2 := &http.Cookie{Name: "ABBCX", Value: session_ab}
+	requestHeader.Add("Cookie", cookie1.String()+"; "+cookie2.String())
+	requestHeader.Add("Origin", strings.Split(ws_url, "/poll")[0])
+	requestHeader.Add("Sec-WebSocket-Protocol", "robapi2_subscription")
+	conn, _, err := websocket.DefaultDialer.Dial(ws_url, requestHeader)
+	if err != nil {
+		return nil, err
+	}
+	go func() {
+		defer func() {
+			conn.Close()
+			close(returnChannel)
+		}()
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			MessageXML := PanelXML{}
+			err = xml.Unmarshal(message, &MessageXML)
+			if err != nil {
+				return
+			}
+			mapString := make(map[string]string)
+			mapString["mode"] = MessageXML.Body.Div.List.Span.Text
 			returnChannel <- mapString
 		}
 	}()
