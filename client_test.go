@@ -354,8 +354,7 @@ func TestElog(t *testing.T) {
 			if !ok {
 				return
 			}
-			fmt.Printf("Message: %v", message)
-
+			fmt.Printf("\nMessage: %v", message)
 		}
 	}
 }

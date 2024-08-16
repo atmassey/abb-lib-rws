@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -36,6 +37,34 @@ func (c *Client) SaveElogSystemDump(Path string) error {
 	}
 	defer resp.Body.Close()
 	return nil
+}
+
+func (c *Client) getElogMessages(Endpoint string) (*ElogMessagesXML, error) {
+	var messages ElogMessagesXML
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+Endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+	q := req.URL.Query()
+	q.Add("lang", "en")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http status code: %v", err)
+	}
+	messages_raw, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = xml.Unmarshal(messages_raw, &messages)
+	if err != nil {
+		return nil, err
+	}
+	return &messages, nil
 }
 
 func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan ElogXML, error) {
@@ -104,9 +133,12 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan ElogXML, er
 				fmt.Printf("Error unmarshalling message: %v\n", err)
 				return
 			}
-			seqnum := MessageXML.Body.Div.List.Span.Text
 			endpoint := MessageXML.Body.Div.List.Endpoint.Href
-			fmt.Printf("Seqnum: %s Endpoint: %s", seqnum, endpoint)
+			msg, err := c.getElogMessages(endpoint)
+			if err != nil {
+				fmt.Printf("Error: %v", err)
+			}
+			fmt.Printf("Get Message: %v", msg)
 			returnChannel <- MessageXML
 		}
 	}()
