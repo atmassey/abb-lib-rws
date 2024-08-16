@@ -344,7 +344,7 @@ func TestGetMechUnit(t *testing.T) {
 
 // func TestOpMode(t *testing.T) {
 // 	client := NewClient("localhost", "Default User", "robotics")
-// 	log, err := client.SubscribeToOperationMode()
+// 	log, err := client.SubscribeToControllerState()
 // 	if err != nil {
 // 		t.Error(err)
 // 	}

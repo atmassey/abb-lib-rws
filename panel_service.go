@@ -85,7 +85,7 @@ func (c *Client) SubscribeToControllerState() (chan map[string]string, error) {
 	body := url.Values{}
 	body.Add("resources", "1")
 	body.Add("1", "/rw/panel/ctrlstate")
-	body.Add("1-p", "0")
+	body.Add("1-p", "1")
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
 	if err != nil {
@@ -154,7 +154,7 @@ func (c *Client) SubscribeToOperationMode() (chan map[string]string, error) {
 	body := url.Values{}
 	body.Add("resources", "1")
 	body.Add("1", "/rw/panel/opmode")
-	body.Add("1-p", "0")
+	body.Add("1-p", "1")
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
 	if err != nil {

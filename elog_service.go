@@ -75,7 +75,7 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 	body := url.Values{}
 	body.Add("resources", "1")
 	body.Add("1", "/rw/elog/1")
-	body.Add("1-p", "0")
+	body.Add("1-p", "1")
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
 	if err != nil {
