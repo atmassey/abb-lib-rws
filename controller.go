@@ -8,6 +8,8 @@ import (
 	"net/url"
 )
 
+// GetControllerResources returns a struct of the XML response for capturing the controllers
+// resources.
 func (c *Client) GetControllerResources() (*ControllerResources, error) {
 	var ControllerResources ControllerResources
 	c.Client = c.DigestAuthenticate()
