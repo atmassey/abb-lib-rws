@@ -3,9 +3,14 @@ package abb
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
+	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 // RestartController will restart the controller with any of the following actions: restart | istart | pstart | bstart
@@ -69,4 +74,70 @@ func (c *Client) GetOperationMode() (string, error) {
 		return "", fmt.Errorf("OP Mode Not Found: %v", opmode)
 	}
 	return mode, nil
+}
+
+func (c *Client) SubscribeToPanel() (chan map[string]string, error) {
+	returnChannel := make(chan map[string]string)
+	body := url.Values{}
+	body.Add("resources", "1")
+	body.Add("1", "/rw/panel/ctrlstate")
+	body.Add("1-p", "0")
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer closeErrorCheck(resp.Body)
+	if resp.StatusCode != http.StatusCreated {
+		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	ws_url := resp.Header.Get("Location")
+	header := resp.Cookies()
+	var session, session_ab string
+	for _, c := range header {
+		if c.Name == "-http-session-" {
+			session = c.Value
+		} else if c.Name == "ABBCX" {
+			session_ab = c.Value
+		}
+	}
+	requestHeader := http.Header{}
+	cookie1 := &http.Cookie{Name: "-http-session-", Value: session}
+	cookie2 := &http.Cookie{Name: "ABBCX", Value: session_ab}
+	requestHeader.Add("Cookie", cookie1.String()+"; "+cookie2.String())
+	requestHeader.Add("Origin", strings.Split(ws_url, "/poll")[0])
+	requestHeader.Add("Sec-WebSocket-Protocol", "robapi2_subscription")
+	conn, _, err := websocket.DefaultDialer.Dial(ws_url, requestHeader)
+	if err != nil {
+		return nil, err
+	}
+
+	go func() {
+		defer func() {
+			conn.Close()
+			close(returnChannel)
+		}()
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
+		for {
+			_, message, err := conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			MessageXML := PanelXML{}
+			err = xml.Unmarshal(message, &MessageXML)
+			if err != nil {
+				return
+			}
+			mapString := make(map[string]string)
+			mapString["state"] = MessageXML.Body.Div.List.Span.Text
+			returnChannel <- mapString
+		}
+	}()
+	return returnChannel, nil
 }

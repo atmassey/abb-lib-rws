@@ -96,10 +96,8 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 	for _, c := range header {
 		if c.Name == "-http-session-" {
 			session = c.Value
-			fmt.Println("Session: ", session)
 		} else if c.Name == "ABBCX" {
 			session_ab = c.Value
-			fmt.Println("Session AB: ", session_ab)
 		}
 	}
 	requestHeader := http.Header{}
@@ -112,10 +110,8 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Connected to websocket")
 	go func() {
 		defer func() {
-			fmt.Printf("Closing connection\n")
 			conn.Close()
 			close(returnChannel)
 		}()

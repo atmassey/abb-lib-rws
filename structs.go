@@ -455,3 +455,48 @@ type ElogMessageSpan struct {
 	Class string `xml:"class,attr"`
 	Text  string `xml:",chardata"`
 }
+
+type PanelXML struct {
+	XMLName xml.Name  `xml:"html"`
+	Head    PanelHead `xml:"head"`
+	Body    PanelBody `xml:"body"`
+}
+
+type PanelHead struct {
+	Title string `xml:"title"`
+}
+
+type PanelBody struct {
+	Div   PanelDiv `xml:"div"`
+	Class string   `xml:"class,attr"`
+}
+
+type PanelDiv struct {
+	Poll []PanelLink `xml:"a"`
+	List PanelList   `xml:"ul>li"`
+}
+
+type PanelLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:",chardata"`
+}
+
+type PanelLinkName struct {
+	Href string `xml:"href,attr"`
+	Name string `xml:"name,attr"`
+}
+
+type PanelList struct {
+	Href PanelMetaLink `xml:"a"`
+	Span PanelSpan     `xml:"span"`
+}
+
+type PanelMetaLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+}
+
+type PanelSpan struct {
+	Class string `xml:"class,attr"`
+	Text  string `xml:",chardata"`
+}
