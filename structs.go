@@ -404,9 +404,9 @@ type ElogLink struct {
 }
 
 type ElogList struct {
-	Class string     `xml:"class,attr"`
-	Title string     `xml:"title,attr"`
-	Spans []ElogSpan `xml:"span"`
+	Class    string       `xml:"class,attr"`
+	Endpoint ElogEndpoint `xml:"a"`
+	Span     ElogSpan     `xml:"span"`
 }
 
 type ElogSpan struct {
@@ -414,7 +414,7 @@ type ElogSpan struct {
 	Text  string `xml:",chardata"`
 }
 
-type ElogMessages struct {
-	MessageName []string
-	MessageText []string
+type ElogEndpoint struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:",chardata"`
 }

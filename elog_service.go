@@ -104,6 +104,9 @@ func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan ElogXML, er
 				fmt.Printf("Error unmarshalling message: %v\n", err)
 				return
 			}
+			seqnum := MessageXML.Body.Div.List.Span.Text
+			endpoint := MessageXML.Body.Div.List.Endpoint.Href
+			fmt.Printf("Seqnum: %s Endpoint: %s", seqnum, endpoint)
 			returnChannel <- MessageXML
 		}
 	}()
