@@ -427,9 +427,14 @@ type ElogMessagesXML struct {
 
 type ElogMessageHead struct {
 	Title string `xml:"title"`
+	Base  string `xml:"base,attr"`
 }
 
 type ElogMessageBody struct {
+	Div ElogMessageDiv `xml:"div"`
+}
+
+type ElogMessageDiv struct {
 	Class string          `xml:"class,attr"`
 	Link  ElogMessageLink `xml:"a"`
 	List  ElogMessageList `xml:"ul>li"`
@@ -442,7 +447,7 @@ type ElogMessageLink struct {
 
 type ElogMessageList struct {
 	Class string            `xml:"class,attr"`
-	Title string            `xml:"title,attr"`
+	Title string            `xml:"title"`
 	Span  []ElogMessageSpan `xml:"span"`
 }
 
