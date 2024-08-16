@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 
@@ -67,14 +66,16 @@ func (c *Client) getElogMessages(Endpoint string) (*ElogMessagesXML, error) {
 	return &messages, nil
 }
 
-func (c *Client) SubscribeToElog(ResourceId int, Priority int) (chan map[string]string, error) {
+// SubscribeToElog subscribes to the Elog websocket for all events happening at the robot.
+// This function returns a map of strings. The keys within the map are as follows
+// "msgtype", "code", "tstamp", "title", "desc", "conseqs", "causes", "actions", "argc",
+// "arg1", and "arg2".
+func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 	returnChannel := make(chan map[string]string)
-	string_id := strconv.Itoa(ResourceId)
-	string_priority := strconv.Itoa(Priority)
 	body := url.Values{}
-	body.Add("resources", string_id)
-	body.Add(string_id, "/rw/elog/"+string_id)
-	body.Add(string_id+"-p", string_priority)
+	body.Add("resources", "1")
+	body.Add("1", "/rw/elog/1")
+	body.Add("1-p", "0")
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/subscription", bytes.NewBufferString(body.Encode()))
 	if err != nil {
