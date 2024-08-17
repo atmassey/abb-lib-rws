@@ -344,17 +344,16 @@ func TestGetMechUnit(t *testing.T) {
 
 // func TestOpMode(t *testing.T) {
 // 	client := NewClient("localhost", "Default User", "robotics")
-// 	log, err := client.SubscribeToControllerState()
+// 	msg, err := client.SubscribeToControllerState()
 // 	if err != nil {
 // 		t.Error(err)
 // 	}
-// 	for {
-// 		select {
-// 		case message, ok := <-log:
-// 			if !ok {
-// 				return
-// 			}
-// 			fmt.Printf("\nMessage: %v", message)
+// 	for range msg {
+// 		message, ok := <-msg
+// 		if !ok {
+// 			fmt.Print("Channel closed")
+// 			break
 // 		}
+// 		fmt.Printf("Controller State: %v", message["state"])
 // 	}
 // }

@@ -39,7 +39,7 @@ func main() {
 }
 ```
 
-#### Get all actions that can be performed on the controller 
+#### Subscribe on the Controller State Websocket
 
 ```Go
 package main
@@ -53,13 +53,18 @@ import (
 func main() {
 	//create a new client
 	client := abb.NewClient("localhost", "Default User", "robotics")
-	actions, err := client.GetControllerActions()
+	// subscribe to controller state websocket
+	msg, err := client.SubscribeToControllerState()
 	if err != nil {
 		panic(err)
 	}
-    	//list all actions that can be performed on the controller
-	for _, action := range actions.Actions {
-		fmt.Printf("Action: %s\n", action)
+	for range msg {
+		message, ok := <-msg
+		if !ok {
+			fmt.Print("Channel closed")
+			break
+		}
+		fmt.Printf("Controller State: %v", message["state"])
 	}
 }
 
