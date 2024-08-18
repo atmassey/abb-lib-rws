@@ -195,3 +195,25 @@ func (c *Client) GetFileSize(Path string) (string, error) {
 	size := resp.Header.Get("Content-Length")
 	return size, nil
 }
+
+// RenameFile will rename a file at the given path.
+// Example NewName: new_file.txt, Path: $TEMP/old_file.txt
+func (c *Client) RenameFile(NewName string, Path string) error {
+	body := url.Values{}
+	body.Add("fs-newname", NewName)
+	body.Add("fs-action", "rename")
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/fileservice/"+Path, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	return nil
+}

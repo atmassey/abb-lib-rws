@@ -341,19 +341,3 @@ func TestGetMechUnit(t *testing.T) {
 		fmt.Printf("Title: %s, Mode: %s, Activation Allowed: %s, Drive Module: %s\n", unit, mechUnitsDecoded.Mode[i], mechUnitsDecoded.ActivationAllowed[i], mechUnitsDecoded.DriveModule[i])
 	}
 }
-
-// func TestOpMode(t *testing.T) {
-// 	client := NewClient("localhost", "Default User", "robotics")
-// 	msg, err := client.SubscribeToControllerState()
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	for range msg {
-// 		message, ok := <-msg
-// 		if !ok {
-// 			fmt.Print("Channel closed")
-// 			break
-// 		}
-// 		fmt.Printf("Controller State: %v", message["state"])
-// 	}
-// }
