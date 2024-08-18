@@ -40,6 +40,8 @@ func (c *Client) BStart() error {
 	return c.RestartController("bstart")
 }
 
+// RestartController is used to restart the controller with the specified action.
+// Possible values: {restart | istart | pstart | bstart}
 func (c *Client) RestartController(Action string) error {
 	body := url.Values{}
 	body.Add("restart-mode", Action)
