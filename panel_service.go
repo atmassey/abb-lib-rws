@@ -13,16 +13,34 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// RestartController will restart the controller with any of the following actions: restart | istart | pstart | bstart
-// CAUTION: A restart will restart the controller and all running programs will be stopped. (Warmstart)
+type RestartController interface {
+	Warmstart() error
+	IStart() error
+	PStart() error
+	BStart() error
+}
+
+// CAUTION: A warmstart will restart the controller and all running programs will be stopped. (Warmstart)
+func (c *Client) Warmstart() error {
+	return c.RestartController("restart")
+}
+
 // CAUTION: A "istart" will restart the controller and factory reset the controller.
+func (c *Client) IStart() error {
+	return c.RestartController("istart")
+}
+
 // CAUTION: A "pstart" will restart the controller and delete all rapid programs but keep all configuration data.
+func (c *Client) PStart() error {
+	return c.RestartController("pstart")
+}
+
 // CAUTION: A "bstart" will restart the controller and revert it to its last auto-saved state.
+func (c *Client) BStart() error {
+	return c.RestartController("bstart")
+}
+
 func (c *Client) RestartController(Action string) error {
-	PossibleActions := []string{"restart", "istart", "pstart", "bstart"}
-	if !stringInSlice(Action, PossibleActions) {
-		return fmt.Errorf("invalid action: %s", Action)
-	}
 	body := url.Values{}
 	body.Add("restart-mode", Action)
 	c.Client = c.DigestAuthenticate()
