@@ -178,6 +178,7 @@ func (c *Client) CopyDirectory(SourcePath string, DestPath string, Overwrite boo
 }
 
 // GetFileSize will return the file size at a given filepath.
+// Example: Path = $TEMP/my_test_file.txt -> 1024
 func (c *Client) GetFileSize(Path string) (string, error) {
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("HEAD", "http://"+c.Host+"/fileservice/"+Path, nil)
