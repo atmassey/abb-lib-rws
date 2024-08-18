@@ -176,3 +176,22 @@ func (c *Client) CopyDirectory(SourcePath string, DestPath string, Overwrite boo
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// GetFileSize will return the file size at a given filepath.
+func (c *Client) GetFileSize(Path string) (string, error) {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("HEAD", "http://"+c.Host+"/fileservice/"+Path, nil)
+	if err != nil {
+		return "", err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return "", fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	size := resp.Header.Get("Content-Length")
+	return size, nil
+}
