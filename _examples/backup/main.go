@@ -14,6 +14,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	//wait for the backup to be created on the robot controller
 	time.Sleep(20 * time.Second)
 	//ftp download the backup to the local machine
 	err = GetDirectoryTree("hd0a/TEMP/my_test_directory", "./test")
