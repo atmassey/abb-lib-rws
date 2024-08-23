@@ -67,6 +67,7 @@ func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 	return nil
 }
 
+// Returns the error state of the motion system
 func (c *Client) GetErrorState() (*MotionErrorState, error) {
 	var motionErrorState MotionErrorStateJson
 	var motionErrorStateDecoded MotionErrorState
