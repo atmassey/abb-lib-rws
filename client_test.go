@@ -5,12 +5,14 @@ import (
 	"encoding/xml"
 	"fmt"
 	"testing"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 func TestControllerActions(t *testing.T) {
 
-	actions := ControllerActionsHTML{}
-	actions_struct := ControllerActions{}
+	actions := structures.ControllerActionsHTML{}
+	actions_struct := structures.ControllerActions{}
 	//sample response from the api documentation
 	actions_raw := `<?xml version="1.0" encoding="utf-8"?>
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -82,7 +84,7 @@ func TestRobotType(t *testing.T) {
 }
 
 func TestControllerMode(t *testing.T) {
-	mode := OperationMode{}
+	mode := structures.OperationMode{}
 	//sample response from the api documentation
 	mode_raw := `{
     "_links": {
@@ -111,8 +113,8 @@ func TestControllerMode(t *testing.T) {
 }
 
 func TestSystemEnergyMetrics(t *testing.T) {
-	var EnergyMetricsRaw SystemEnergy
-	var EnergyMetricsDecoded SystemEnergyMetrics
+	var EnergyMetricsRaw structures.SystemEnergy
+	var EnergyMetricsDecoded structures.SystemEnergyMetrics
 	data := `{
 		"_links": {
 			"base": {
@@ -187,7 +189,7 @@ func TestSystemEnergyMetrics(t *testing.T) {
 	for _, state := range EnergyMetricsRaw.Embedded.State {
 		for _, MechUnits := range state.MechUnits {
 			for _, axis := range MechUnits.Axis {
-				axisEnergy := SystemAxisEnergy{Axis: axis.Title, Energy: axis.IntervalEnergy}
+				axisEnergy := structures.SystemAxisEnergy{Axis: axis.Title, Energy: axis.IntervalEnergy}
 				EnergyMetricsDecoded.AxisEnergy = append(EnergyMetricsDecoded.AxisEnergy, axisEnergy)
 			}
 		}
@@ -301,8 +303,8 @@ func TestGetIOSignalsJson(t *testing.T) {
 }
 
 func TestGetMechUnit(t *testing.T) {
-	mechUnits := MechUnitsJson{}
-	mechUnitsDecoded := MechUnits{}
+	mechUnits := structures.MechUnitsJson{}
+	mechUnitsDecoded := structures.MechUnits{}
 	//sample response from the api documentation
 	data := `{
     "_links": {

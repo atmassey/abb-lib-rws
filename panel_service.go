@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/atmassey/abb-lib-rws/structures"
 	"github.com/gorilla/websocket"
 )
 
@@ -68,7 +69,7 @@ func (c *Client) RestartController(Action string) error {
 // GetOperationMode returns the current operation mode of the controller.
 // Possible values: (INIT | AUTO_CH | MANF_CH | MANR | MANF | AUTO | UNDEF)
 func (c *Client) GetOperationMode() (string, error) {
-	var opmode OperationMode
+	var opmode structures.OperationMode
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/panel/opmode", nil)
 	if err != nil {
@@ -152,7 +153,7 @@ func (c *Client) SubscribeToControllerState() (chan map[string]string, error) {
 			if err != nil {
 				return
 			}
-			MessageXML := PanelXML{}
+			MessageXML := structures.PanelXML{}
 			err = xml.Unmarshal(message, &MessageXML)
 			if err != nil {
 				return
@@ -221,7 +222,7 @@ func (c *Client) SubscribeToOperationMode() (chan map[string]string, error) {
 			if err != nil {
 				return
 			}
-			MessageXML := PanelXML{}
+			MessageXML := structures.PanelXML{}
 			err = xml.Unmarshal(message, &MessageXML)
 			if err != nil {
 				return

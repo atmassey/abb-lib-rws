@@ -6,12 +6,14 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 // GetControllerResources returns a struct of the XML response for capturing the controllers
 // resources.
-func (c *Client) GetControllerResources() (*ControllerResources, error) {
-	var ControllerResources ControllerResources
+func (c *Client) GetControllerResources() (*structures.ControllerResources, error) {
+	var ControllerResources structures.ControllerResources
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/ctrl", nil)
 	if err != nil {
@@ -37,9 +39,9 @@ func (c *Client) GetControllerResources() (*ControllerResources, error) {
 }
 
 // GetControllerActions returns the actions that can be performed on the controller
-func (c *Client) GetControllerActions() (*ControllerActions, error) {
-	var actions ControllerActionsHTML
-	var actionsStruct ControllerActions
+func (c *Client) GetControllerActions() (*structures.ControllerActions, error) {
+	var actions structures.ControllerActionsHTML
+	var actionsStruct structures.ControllerActions
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/ctrl", nil)
 	if err != nil {

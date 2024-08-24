@@ -7,11 +7,13 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 // GetUsers gets a list of users from the controller
-func (c *Client) GetUsers() (*UserResources, error) {
-	var users UserResources
+func (c *Client) GetUsers() (*structures.UserResources, error) {
+	var users structures.UserResources
 	c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/users", nil)
 	if err != nil {

@@ -10,9 +10,9 @@ import (
 )
 
 // GetMechUnits returns a list of all the mechunits on the robot controller
-func (c *Client) GetMechUnits() (*MechUnits, error) {
+func (c *Client) GetMechUnits() (*structures.MechUnits, error) {
 	mechUnits := structures.MechUnitsJson{}
-	mechUnitsDecoded := MechUnits{}
+	mechUnitsDecoded := structures.MechUnits{}
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/motionsystem/mechunits", nil)
 	if err != nil {
@@ -70,9 +70,9 @@ func (c *Client) ClearSMBData(MechUnit string, type_ string) error {
 }
 
 // Returns the error state of the motion system
-func (c *Client) GetErrorState() (*MotionErrorState, error) {
-	var motionErrorState MotionErrorStateJson
-	var motionErrorStateDecoded MotionErrorState
+func (c *Client) GetErrorState() (*structures.MotionErrorState, error) {
+	var motionErrorState structures.MotionErrorStateJson
+	var motionErrorStateDecoded structures.MotionErrorState
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/motionsystem/errorstate", nil)
 	if err != nil {
