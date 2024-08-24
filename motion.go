@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 // GetMechUnits returns a list of all the mechunits on the robot controller
 func (c *Client) GetMechUnits() (*MechUnits, error) {
-	mechUnits := MechUnitsJson{}
+	mechUnits := structures.MechUnitsJson{}
 	mechUnitsDecoded := MechUnits{}
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/motionsystem/mechunits", nil)
