@@ -52,7 +52,7 @@ func TestControllerActions(t *testing.T) {
 
 func TestRobotType(t *testing.T) {
 
-	robotType := RobotType{}
+	robotType := structures.RobotType{}
 	//sample response from the api documentation
 	robotType_raw := `<?xml version="1.0" encoding="UTF-8"?>
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -201,8 +201,8 @@ func TestSystemEnergyMetrics(t *testing.T) {
 }
 
 func TestGetIOSignalsJson(t *testing.T) {
-	signals_raw := IOSignalsJson{}
-	signals := IOSignals{}
+	signals_raw := structures.IOSignalsJson{}
+	signals := structures.IOSignals{}
 	//sample response from the api documentation
 	data := `{
     "_links": {

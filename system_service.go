@@ -11,8 +11,8 @@ import (
 )
 
 // GetRobotType returns a struct of the robot type.
-func (c *Client) GetRobotType() (*RobotType, error) {
-	var robotType RobotType
+func (c *Client) GetRobotType() (*structures.RobotType, error) {
+	var robotType structures.RobotType
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/system/robottype", nil)
 	if err != nil {

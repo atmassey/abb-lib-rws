@@ -1,5 +1,7 @@
 package structures
 
+import "encoding/xml"
+
 type MotionErrorStateJson struct {
 	Links    MotionErrorStateJsonLinks `json:"_links"`
 	Embedded MotionErrorStateJsonState `json:"_embedded"`
@@ -159,4 +161,38 @@ type InstalledProductsState struct {
 	Type        string `json:"_type"`
 	Title       string `json:"_title"`
 	VersionName string `json:"version-name"`
+}
+
+type RobotType struct {
+	XMLName xml.Name      `xml:"html"`
+	Head    RobotTypeHead `xml:"head"`
+	Body    RobotTypeBody `xml:"body"`
+}
+
+type RobotTypeHead struct {
+	XMLName xml.Name `xml:"head"`
+	Title   string   `xml:"title"`
+	Base    string   `xml:"base,attr"`
+}
+
+type RobotTypeBody struct {
+	XMLName xml.Name       `xml:"body"`
+	State   RobotTypeState `xml:"div"`
+}
+
+type RobotTypeState struct {
+	XMLName xml.Name         `xml:"div"`
+	Self    RobotTypeSelf    `xml:"a"`
+	Robots  []RobotTypeRobot `xml:"ul>li"`
+}
+
+type RobotTypeSelf struct {
+	XMLName xml.Name `xml:"a"`
+	Rel     string   `xml:"rel,attr"`
+}
+
+type RobotTypeRobot struct {
+	XMLName   xml.Name `xml:"li"`
+	Title     string   `xml:"title,attr"`
+	RobotType string   `xml:"span"`
 }
