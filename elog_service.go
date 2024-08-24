@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/atmassey/abb-lib-rws/structures"
 	"github.com/gorilla/websocket"
 )
 
@@ -38,8 +39,8 @@ func (c *Client) SaveElogSystemDump(Path string) error {
 	return nil
 }
 
-func (c *Client) getElogMessages(Endpoint string) (*ElogMessagesXML, error) {
-	var messages ElogMessagesXML
+func (c *Client) getElogMessages(Endpoint string) (*structures.ElogMessagesXML, error) {
+	var messages structures.ElogMessagesXML
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+Endpoint, nil)
 	if err != nil {
@@ -122,7 +123,7 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 			if err != nil {
 				return
 			}
-			MessageXML := ElogXML{}
+			MessageXML := structures.ElogXML{}
 			err = xml.Unmarshal(message, &MessageXML)
 			if err != nil {
 				return

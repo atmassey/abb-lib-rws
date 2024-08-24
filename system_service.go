@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 // GetRobotType returns a struct of the robot type.
-func (c *Client) GetRobotType() (*RobotType, error) {
-	var robotType RobotType
+func (c *Client) GetRobotType() (*structures.RobotType, error) {
+	var robotType structures.RobotType
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/system/robottype", nil)
 	if err != nil {
@@ -38,9 +40,9 @@ func (c *Client) GetRobotType() (*RobotType, error) {
 // GetSystemEnergyMetrics returns a struct of energy metrics for each axis on the controller.
 // The struct includes the axis title and the energy consumption for the axis.
 // The struct also includes the total accumulated energy consumption.
-func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
-	var EnergyMetricsDecoded SystemEnergyMetrics
-	var EnergyMetricsRaw SystemEnergy
+func (c *Client) GetSystemEnergyMetrics() (*structures.SystemEnergyMetrics, error) {
+	var EnergyMetricsDecoded structures.SystemEnergyMetrics
+	var EnergyMetricsRaw structures.SystemEnergy
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/system/energy", nil)
 	if err != nil {
@@ -65,7 +67,7 @@ func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
 	for _, state := range EnergyMetricsRaw.Embedded.State {
 		for _, MechUnits := range state.MechUnits {
 			for _, axis := range MechUnits.Axis {
-				axisEnergy := SystemAxisEnergy{Axis: axis.Title, Energy: axis.IntervalEnergy}
+				axisEnergy := structures.SystemAxisEnergy{Axis: axis.Title, Energy: axis.IntervalEnergy}
 				EnergyMetricsDecoded.AxisEnergy = append(EnergyMetricsDecoded.AxisEnergy, axisEnergy)
 			}
 		}
@@ -75,9 +77,9 @@ func (c *Client) GetSystemEnergyMetrics() (*SystemEnergyMetrics, error) {
 
 // GetInstalledProducts returns a struct of installed products on the controller.
 // The struct includes the product title and version.
-func (c *Client) GetInstalledProducts() (*InstalledSystemProducts, error) {
-	var InstalledProducts InstalledProducts
-	var InstalledProductsDecoded InstalledSystemProducts
+func (c *Client) GetInstalledProducts() (*structures.InstalledSystemProducts, error) {
+	var InstalledProducts structures.InstalledProducts
+	var InstalledProductsDecoded structures.InstalledSystemProducts
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/system/products", nil)
 	if err != nil {
@@ -98,7 +100,7 @@ func (c *Client) GetInstalledProducts() (*InstalledSystemProducts, error) {
 	if err != nil {
 		return nil, err
 	}
-	installedProducts := InstalledSystemProducts{}
+	installedProducts := structures.InstalledSystemProducts{}
 	for _, product := range InstalledProducts.State {
 		title := product.Title
 		version := product.VersionName

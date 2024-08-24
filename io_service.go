@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 // GetIOSignals returns a struct of all IO signals on the robot with their names and values.
-func (c *Client) GetIOSignals() (*IOSignals, error) {
-	var signals IOSignals
-	var signalsRaw IOSignalsJson
+func (c *Client) GetIOSignals() (*structures.IOSignals, error) {
+	var signals structures.IOSignals
+	var signalsRaw structures.IOSignalsJson
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/iosystem/signals", nil)
 	if err != nil {
