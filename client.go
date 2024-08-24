@@ -6,6 +6,13 @@ import (
 	"github.com/icholy/digest"
 )
 
+type Client struct {
+	Host     string
+	Username string
+	Password string
+	Client   *http.Client
+}
+
 func NewClient(Host string, Username string, Password string) *Client {
 	abb := new(Client)
 	abb.Host = Host
