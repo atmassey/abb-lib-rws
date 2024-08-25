@@ -39,6 +39,8 @@ func (c *Client) SaveElogSystemDump(Path string) error {
 	return nil
 }
 
+// getElogMessages is a helper function that returns the messages from the Elog system based on the endpoint.
+// This function is used in conjunction with SubscribeToElog for the Elog websocket.
 func (c *Client) getElogMessages(Endpoint string) (*structures.ElogMessagesXML, error) {
 	var messages structures.ElogMessagesXML
 	c.Client = c.DigestAuthenticate()
