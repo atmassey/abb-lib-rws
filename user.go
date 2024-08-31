@@ -66,3 +66,26 @@ func (c *Client) LoginAsLocalUser(Type_ string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) RequestRMMP(Action string) error {
+	if Action != "modify" && Action != "exec" {
+		return fmt.Errorf("invalid action %s", Action)
+	}
+	body := url.Values{}
+	body.Add("privilege", Action)
+	c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/users", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusAccepted {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
