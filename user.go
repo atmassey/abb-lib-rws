@@ -67,6 +67,7 @@ func (c *Client) LoginAsLocalUser(Type_ string) error {
 	return nil
 }
 
+// Request RMMP is used to request manual mode priveleges. Accepted actions are modify or exec.
 func (c *Client) RequestRMMP(Action string) error {
 	if Action != "modify" && Action != "exec" {
 		return fmt.Errorf("invalid action %s", Action)
