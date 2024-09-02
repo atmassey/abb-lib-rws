@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/atmassey/abb-lib-rws/structures"
 )
@@ -148,6 +149,24 @@ func (c *Client) RestoreSafetyController() error {
 }
 
 func (c *Client) SetClock(Time structures.Clock) error {
+	if _, err := strconv.Atoi(Time.Year); err != nil {
+		return fmt.Errorf("invalid year format")
+	}
+	if _, err := strconv.Atoi(Time.Month); err != nil {
+		return fmt.Errorf("invalid month format")
+	}
+	if _, err := strconv.Atoi(Time.Day); err != nil {
+		return fmt.Errorf("invalid day format")
+	}
+	if _, err := strconv.Atoi(Time.Hour); err != nil {
+		return fmt.Errorf("invalid hour format")
+	}
+	if _, err := strconv.Atoi(Time.Minute); err != nil {
+		return fmt.Errorf("invalid minute format")
+	}
+	if _, err := strconv.Atoi(Time.Second); err != nil {
+		return fmt.Errorf("invalid second format")
+	}
 	body := url.Values{}
 	body.Add("sys-clock-year", Time.Year)
 	body.Add("sys-clock-month", Time.Month)
