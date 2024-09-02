@@ -1,6 +1,7 @@
 package abb
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -135,6 +136,31 @@ func (c *Client) RestoreSafetyController() error {
 	q := req.URL.Query()
 	q.Add("action", "reset")
 	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+func (c *Client) SetClock(Time structures.Clock) error {
+	body := url.Values{}
+	body.Add("sys-clock-year", Time.Year)
+	body.Add("sys-clock-month", Time.Month)
+	body.Add("sys-clock-day", Time.Day)
+	body.Add("sys-clock-hour", Time.Hour)
+	body.Add("sys-clock-minute", Time.Minute)
+	body.Add("sys-clock-second", Time.Second)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("PUT", "http://"+c.Host+"/ctrl/clock", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		return err

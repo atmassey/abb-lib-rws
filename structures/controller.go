@@ -110,3 +110,12 @@ type UserResourcesSpan struct {
 	Class string `xml:"class,attr"`
 	Text  string `xml:",chardata"`
 }
+
+type Clock struct {
+	Year   string
+	Month  string
+	Day    string
+	Hour   string
+	Minute string
+	Second string
+}
