@@ -4,6 +4,8 @@ github.com/atmassey/abb-lib-rws v0.0.0-20240818001812-c2d85f02f3a3 h1:4C0pGR1z+n
 github.com/atmassey/abb-lib-rws v0.0.0-20240818001812-c2d85f02f3a3/go.mod h1:e1xJXJiabATzd10vUbpWnc9o117+gosshjZmf3yVyRI=
 github.com/atmassey/abb-lib-rws v0.0.0-20240818004736-dab03d111ce5 h1:yBz8yFhfPlXI31AkDNT10GJg8lnyJJ2D/7YAuD0U13U=
 github.com/atmassey/abb-lib-rws v0.0.0-20240818004736-dab03d111ce5/go.mod h1:e1xJXJiabATzd10vUbpWnc9o117+gosshjZmf3yVyRI=
+github.com/atmassey/abb-lib-rws v0.0.0-20240831132426-5c471184f2d9 h1:juBfR6I8VhTWv6doeWImQsl5uTmtzQ7DlZTexACso6c=
+github.com/atmassey/abb-lib-rws v0.0.0-20240831132426-5c471184f2d9/go.mod h1:e1xJXJiabATzd10vUbpWnc9o117+gosshjZmf3yVyRI=
 github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/icholy/digest v0.1.23 h1:4hX2pIloP0aDx7RJW0JewhPPy3R8kU+vWKdxPsCCGtY=

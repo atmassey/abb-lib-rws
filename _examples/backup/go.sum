@@ -1,11 +1,17 @@
 github.com/atmassey/abb-lib-rws v0.0.0-20240724204356-7eab05a3086e h1:6//1RUYXkMZYrDnJs1ZwNos+UNpK42hzG5RpKOP3aqQ=
 github.com/atmassey/abb-lib-rws v0.0.0-20240724204356-7eab05a3086e/go.mod h1:nK4hvuM7EdRxdahOQKgQ99VMIEidbAKq0zP7hFLEiX8=
+github.com/atmassey/abb-lib-rws v0.0.0-20240831132426-5c471184f2d9 h1:juBfR6I8VhTWv6doeWImQsl5uTmtzQ7DlZTexACso6c=
+github.com/atmassey/abb-lib-rws v0.0.0-20240831132426-5c471184f2d9/go.mod h1:e1xJXJiabATzd10vUbpWnc9o117+gosshjZmf3yVyRI=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
+github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
+github.com/hashicorp/errwrap v1.1.0 h1:OxrOeh75EUXMY8TBjag2fzXGZ40LB6IKw45YeGUDY2I=
+github.com/hashicorp/errwrap v1.1.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/icholy/digest v0.1.23 h1:4hX2pIloP0aDx7RJW0JewhPPy3R8kU+vWKdxPsCCGtY=
