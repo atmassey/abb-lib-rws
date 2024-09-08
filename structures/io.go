@@ -1,5 +1,7 @@
 package structures
 
+import "encoding/xml"
+
 type IOSignalsJson struct {
 	Links    IOSignalsJsonLinks `json:"_links"`
 	Embedded IOSignalsJsonState `json:"_embedded"`
@@ -39,4 +41,44 @@ type IOSignals struct {
 	SignalName  []string
 	SignalType  []string
 	SignalValue []int
+}
+
+type IOSignalXML struct {
+	XMLName xml.Name     `xml:"html"`
+	Head    IOSignalHead `xml:"head"`
+	Body    IOSignalBody `xml:"body"`
+}
+
+type IOSignalHead struct {
+	Title string `xml:"title"`
+}
+
+type IOSignalBody struct {
+	Div   IOSignalDiv `xml:"div"`
+	Class string      `xml:"class,attr"`
+}
+
+type IOSignalDiv struct {
+	Poll []IOSignalLink `xml:"a"`
+	List IOSignalList   `xml:"ul>li"`
+}
+
+type IOSignalLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:",chardata"`
+}
+
+type IOSignalList struct {
+	Href IOSignalMetaLink `xml:"a"`
+	Span []IOSignalSpan   `xml:"span"`
+}
+
+type IOSignalMetaLink struct {
+	Href string `xml:"href,attr"`
+	Rel  string `xml:"rel,attr"`
+}
+
+type IOSignalSpan struct {
+	Class string `xml:"class,attr"`
+	Text  string `xml:",chardata"`
 }
