@@ -75,6 +75,8 @@ func (c *Client) UpdateIODevice(State string, DevicePath string) error {
 	return nil
 }
 
+// SubscribeToIOSignal is used to subscribe to an IO signal and returns a channel with the signal value and simulation state.
+// Example signal: LOCAL/PANEL/MAN1 for manual mode
 func (c *Client) SubscribeToIOSignal(Signal string) (chan map[string]string, error) {
 	returnChannel := make(chan map[string]string)
 	body := url.Values{}
