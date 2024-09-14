@@ -90,3 +90,23 @@ func (c *Client) RequestRMMP(Action string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) RemoteUserLogonRequest() error {
+	c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/users/remoteuser", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "remotelogin")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
