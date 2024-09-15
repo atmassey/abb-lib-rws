@@ -212,3 +212,34 @@ func (c *Client) SetIdentity(ControllerName string, ControllerId string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetControllerNetworkConfiguration sets the network configuration of the controller
+// Method can be either "fixip", "dhcp", or "noip"
+func (c *Client) SetControllerNetworkConfiguration(Method string, Address string, Mask string, Gateway string) error {
+	if Method != "fixip" && Method != "dhcp" && Method != "noip" {
+		return fmt.Errorf("invalid method %s", Method)
+	}
+	body := url.Values{}
+	body.Add("method", Method)
+	body.Add("address", Address)
+	body.Add("mask", Mask)
+	body.Add("gateway", Gateway)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("PUT", "http://"+c.Host+"/ctrl/network", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	q := req.URL.Query()
+	q.Add("action", "set")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusAccepted {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
