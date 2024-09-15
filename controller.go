@@ -225,7 +225,7 @@ func (c *Client) SetControllerNetworkConfiguration(Method string, Address string
 	body.Add("mask", Mask)
 	body.Add("gateway", Gateway)
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("PUT", "http://"+c.Host+"/ctrl/network", bytes.NewBufferString(body.Encode()))
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/network", bytes.NewBufferString(body.Encode()))
 	if err != nil {
 		return err
 	}
