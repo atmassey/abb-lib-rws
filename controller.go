@@ -190,3 +190,25 @@ func (c *Client) SetClock(Time structures.Clock) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetIdentity sets the controller name and id
+func (c *Client) SetIdentity(ControllerName string, ControllerId string) error {
+	body := url.Values{}
+	body.Add("ctrl-name", ControllerName)
+	body.Add("ctrl-id", ControllerId)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("PUT", "http://"+c.Host+"/ctrl/identity", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
