@@ -243,3 +243,24 @@ func (c *Client) SetControllerNetworkConfiguration(Method string, Address string
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// UnlockSafetyController will unlock the safety controller if the proper user is logged in and authenticated.
+func (c *Client) UnlockSafetyController() error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "unlock")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
