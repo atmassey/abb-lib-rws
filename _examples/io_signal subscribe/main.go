@@ -19,8 +19,7 @@ func main() {
 			break
 		}
 		// Print the signal value
-		fmt.Printf("Signal Value: %v \n", message["value"])
-		fmt.Printf("Signal Simulation State: %v \n", message["state"])
+		fmt.Printf("Signal Value: %v  Signal Simulation State: %v\n", message["value"], message["state"])
 	}
 
 }
