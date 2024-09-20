@@ -128,7 +128,7 @@ func (c *Client) CompressionResource(srcpath string, dstpath string, comp string
 
 // RestoreSafetyController will reset the safety controller
 // Be careful with this function as it will reset the safety controller to its factory default state
-func (c *Client) RestoreSafetyController() error {
+func (c *Client) FactoryDefaultSafetyController() error {
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", nil)
 	if err != nil {
