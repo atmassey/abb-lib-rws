@@ -287,6 +287,7 @@ func (c *Client) AddRouteTableEntry(destination string, gateway string) error {
 	return nil
 }
 
+// RemoveRoutTableEntry will remove a route table entry from the controller network stack
 func (c *Client) RemoveRouteTableEntry(destination string) error {
 	body := url.Values{}
 	body.Add("destination", destination)
