@@ -264,3 +264,25 @@ func (c *Client) UnlockSafetyController() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// Add Rotue Table Entry will add a route table entry to the controller network stack
+func (c *Client) AddRouteTableEntry(destination string, gateway string) error {
+	body := url.Values{}
+	body.Add("destination", destination)
+	body.Add("gateway", gateway)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/network/route/add", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
