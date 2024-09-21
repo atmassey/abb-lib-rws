@@ -286,3 +286,23 @@ func (c *Client) AddRouteTableEntry(destination string, gateway string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) RemoveRouteTableEntry(destination string) error {
+	body := url.Values{}
+	body.Add("destination", destination)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/network/route/remove", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusAccepted {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
