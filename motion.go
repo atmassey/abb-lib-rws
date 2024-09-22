@@ -107,12 +107,36 @@ func (c *Client) SetMotionSupervisionMode(MechanicalUnit string, Mode bool) erro
 	body.Add("mode", fmt.Sprintf("%t", Mode))
 	body.Add("mechunit-name", MechanicalUnit)
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/", bytes.NewBufferString(body.Encode()))
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/motionsupervision", bytes.NewBufferString(body.Encode()))
 	if err != nil {
 		return err
 	}
 	q := req.URL.Query()
 	q.Add("action", "set-mode")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %s", resp.Status)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// SetMotionSupervisionSensitivity sets the motion supervision sensitivity for a specific mechanical unit
+func (c *Client) SetMotionSupervisionSensitivity(MechanicalUnit string, Sensitivity string) error {
+	body := url.Values{}
+	body.Add("sensitivity", Sensitivity)
+	body.Add("mechunit-name", MechanicalUnit)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/motionsupervision", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-level")
 	req.URL.RawQuery = q.Encode()
 	resp, err := c.Client.Do(req)
 	if err != nil {
