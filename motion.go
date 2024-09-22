@@ -1,6 +1,7 @@
 package abb
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -98,4 +99,28 @@ func (c *Client) GetErrorState() (*structures.MotionErrorState, error) {
 	}
 	defer closeErrorCheck(resp.Body)
 	return &motionErrorStateDecoded, nil
+}
+
+// SetMotionSupervisionMode sets the motion supervision mode for a specific mechanical unit
+func (c *Client) SetMotionSupervisionMode(MechanicalUnit string, Mode bool) error {
+	body := url.Values{}
+	body.Add("mode", fmt.Sprintf("%t", Mode))
+	body.Add("mechunit-name", MechanicalUnit)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-mode")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %s", resp.Status)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
 }
