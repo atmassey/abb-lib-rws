@@ -6,9 +6,9 @@ import (
 )
 
 // ClearProfinetAlarms clears the alarms for a specific profinet device
-func (c *Client) ClearProfinetAlarms(Device string) error {
+func (c *Client) ClearProfinetAlarms(Device string, Network string) error {
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("POST", "http://"+c.Host+"rw/iosystem/devices/PROFINET/"+Device+"/alarms/clear", nil)
+	req, err := http.NewRequest("POST", "http://"+c.Host+"rw/iosystem/devices/"+Network+"/"+Device+"/alarms/clear", nil)
 	if err != nil {
 		return err
 	}
