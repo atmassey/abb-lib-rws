@@ -178,3 +178,27 @@ func (c *Client) SetPathSupervisionMode(Mode bool, MechUnit string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetPathSupervisionLevel sets the path supervision level for a specific mechanical unit
+func (c *Client) SetPathSupervisionLevel(Level string, MechUnit string) error {
+	body := url.Values{}
+	body.Add("level", Level)
+	body.Add("mechunit", MechUnit)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/pathsupervision", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-level")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
