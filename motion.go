@@ -148,3 +148,33 @@ func (c *Client) SetMotionSupervisionSensitivity(MechanicalUnit string, Sensitiv
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetPathSupervisionMode sets the path supervision mode for a specific mechanical unit
+func (c *Client) SetPathSupervisionMode(Mode bool, MechUnit string) error {
+	var ActualMode string
+	if Mode {
+		ActualMode = "ON"
+	} else {
+		ActualMode = "OFF"
+	}
+	body := url.Values{}
+	body.Add("mode", ActualMode)
+	body.Add("mechunit", MechUnit)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/pathsupervision", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-mode")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
