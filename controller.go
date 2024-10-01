@@ -307,3 +307,26 @@ func (c *Client) RemoveRouteTableEntry(destination string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) SetBootDevice(path string) error {
+	body := url.Values{}
+	body.Add("path", path)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/system", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	q := req.URL.Query()
+	q.Add("action", "set-bootdevice")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
