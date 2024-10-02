@@ -330,3 +330,23 @@ func (c *Client) SetBootDevice(path string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) RemoveValidationInfo() error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "invalidate-cfg")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
