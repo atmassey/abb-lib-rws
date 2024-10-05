@@ -374,3 +374,30 @@ func (c *Client) AddValidationInfo(validated_by string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SoftwareSyncAcknowledgement will acknowledge a software safety sync request
+func (c *Client) SoftwareSyncAcknowledgement(index int) error {
+	index_string := strconv.Itoa(index)
+	if index_string == "" || (index != 1 && index != 2) {
+		return fmt.Errorf("invalid index: %d must be 1 or 2", index)
+	}
+	body := url.Values{}
+	body.Add("index", index_string)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "syncack")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
