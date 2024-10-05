@@ -350,3 +350,27 @@ func (c *Client) RemoveValidationInfo() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// AddValidationInfo will add validation information to the controller with user who validated the configuration
+func (c *Client) AddValidationInfo(validated_by string) error {
+	body := url.Values{}
+	body.Add("validated-by", validated_by)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	q := req.URL.Query()
+	q.Add("action", "validate-cfg")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
