@@ -142,3 +142,24 @@ func (c *Client) SubscribeToIOSignal(Signal string) (chan map[string]string, err
 	}()
 	return returnChannel, nil
 }
+
+// UnblockSignals will remove simulation for all simulated logical I/O signals.
+func (c *Client) UnblockSignals() error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/rw/iosystem/signals", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "unblock-signal")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
