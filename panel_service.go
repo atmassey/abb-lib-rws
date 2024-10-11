@@ -234,3 +234,30 @@ func (c *Client) SubscribeToOperationMode() (chan map[string]string, error) {
 	}()
 	return returnChannel, nil
 }
+
+// AcknowledgeOpMode is used to acknowledge the operation mode change.
+func (c *Client) AcknowledgeOpMode(Mode string) error {
+	if Mode != "auto" && Mode != "manf" && Mode != "coldet" {
+		return fmt.Errorf("invalid mode %s", Mode)
+	}
+	body := url.Values{}
+	body.Add("opmode", Mode)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/panel/opmode", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "acknowledge")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
