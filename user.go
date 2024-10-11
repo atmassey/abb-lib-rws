@@ -94,7 +94,7 @@ func (c *Client) RequestRMMP(Action string) error {
 // CancelRMMPRequest is used to cancel a RMMP request.
 func (c *Client) CancelRMMPRequest() error {
 	c.DigestAuthenticate()
-	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/users/rmmp", nil)
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/users/rmmp", nil)
 	if err != nil {
 		return err
 	}
