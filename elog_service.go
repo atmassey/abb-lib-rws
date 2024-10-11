@@ -144,3 +144,24 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 	}()
 	return returnChannel, nil
 }
+
+// ClearElogMessages clears all messages from the Elog system on domain 0.
+func (c *Client) ClearElogMessages() error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/elog/0", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "clear")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
