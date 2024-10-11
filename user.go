@@ -91,6 +91,28 @@ func (c *Client) RequestRMMP(Action string) error {
 	return nil
 }
 
+// CancelRMMPRequest is used to cancel a RMMP request.
+func (c *Client) CancelRMMPRequest() error {
+	c.DigestAuthenticate()
+	req, err := http.NewRequest("DELETE", "http://"+c.Host+"/users/rmmp", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "cancel")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// RemoteUserLogonRequest is used to request a remote user logon.
 func (c *Client) RemoteUserLogonRequest() error {
 	c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/users/remoteuser", nil)
@@ -111,6 +133,7 @@ func (c *Client) RemoteUserLogonRequest() error {
 	return nil
 }
 
+// RemoteUserLogOutRequest is used to request a remote user log out.
 func (c *Client) RemoteUserLogOutRequest() error {
 	c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/users/remoteuser", nil)
