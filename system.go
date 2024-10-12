@@ -1,11 +1,13 @@
 package abb
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/atmassey/abb-lib-rws/structures"
 )
@@ -108,4 +110,25 @@ func (c *Client) GetInstalledProducts() (*structures.InstalledSystemProducts, er
 		InstalledProductsDecoded.Version = append(installedProducts.Version, version)
 	}
 	return &InstalledProductsDecoded, nil
+}
+
+func (c *Client) KeylessMotorOn() error {
+	body := url.Values{}
+	body.Add("state", "run")
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/cfg", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "keyless")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
 }
