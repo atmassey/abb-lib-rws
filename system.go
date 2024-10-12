@@ -112,6 +112,7 @@ func (c *Client) GetInstalledProducts() (*structures.InstalledSystemProducts, er
 	return &InstalledProductsDecoded, nil
 }
 
+// KeylessMotorOn is used to turn on the motors without utilizing the key.
 func (c *Client) KeylessMotorOn() error {
 	body := url.Values{}
 	body.Add("state", "run")
