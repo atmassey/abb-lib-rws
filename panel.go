@@ -320,3 +320,30 @@ func (c *Client) UnlockOpMode(Pin int16) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetSpeedRatio is used to set the speed ratio of the controller. The value should be between 0 and 100.
+func (c *Client) SetSpeedRatio(SpeedRatio int8) error {
+	if SpeedRatio < 0 || SpeedRatio > 100 {
+		return fmt.Errorf("invalid speed ratio %d", SpeedRatio)
+	}
+	body := url.Values{}
+	body.Add("speed-ratio", fmt.Sprintf("%d", SpeedRatio))
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/panel/speedratio", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
