@@ -261,3 +261,62 @@ func (c *Client) AcknowledgeOpMode(Mode string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// LockOpMode is used to lock the operation mode selection.
+func (c *Client) LockOpMode(Pin int16, Permanent bool) error {
+	if Pin < 0 || Pin > 9999 {
+		return fmt.Errorf("invalid pin %d", Pin)
+	}
+	body := url.Values{}
+	body.Add("pin", fmt.Sprintf("%04d", Pin))
+	if Permanent {
+		body.Add("permanent", "1")
+	} else {
+		body.Add("permanent", "0")
+	}
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/panel/opmode", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "lock")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// UnlockOpMode is used to unlock the operation mode selection.
+func (c *Client) UnlockOpMode(Pin int16) error {
+	if Pin < 0 || Pin > 9999 {
+		return fmt.Errorf("invalid pin %d", Pin)
+	}
+	body := url.Values{}
+	body.Add("pin", fmt.Sprintf("%v", Pin))
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/panel/opmode", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "unlock")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
