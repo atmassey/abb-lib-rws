@@ -431,3 +431,21 @@ func (c *Client) SetControllerState(MotorOn bool) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// Logs out the user and removes the associated session by clearing the session cookie
+func (c *Client) Logout() error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/logout", nil)
+	if err != nil {
+		return err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
