@@ -308,6 +308,7 @@ func (c *Client) RemoveRouteTableEntry(destination string) error {
 	return nil
 }
 
+// SetBootDevice will set the boot device of the controller
 func (c *Client) SetBootDevice(path string) error {
 	body := url.Values{}
 	body.Add("path", path)
@@ -331,6 +332,7 @@ func (c *Client) SetBootDevice(path string) error {
 	return nil
 }
 
+// RemoveValidationInfo will remove the validation information from the controller.
 func (c *Client) RemoveValidationInfo() error {
 	c.Client = c.DigestAuthenticate()
 	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", nil)
