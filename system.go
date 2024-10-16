@@ -133,3 +133,24 @@ func (c *Client) KeylessMotorOn() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) RenameSystem(old_name string, new_name string) error {
+	body := url.Values{}
+	body.Add("newname", new_name)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/system/"+old_name, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "rename")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
