@@ -220,3 +220,57 @@ func (C *Client) ReleaseMastershipAll() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// RequestMastershipIndividual requests mastership of a specific domain on the controller.
+// ie. CFG, Motion, RAPID, etc.
+func (c *Client) RequestMastershipIndividual(domain string) error {
+	if domain == "" {
+		return fmt.Errorf("domain cannot be empty")
+	}
+	if domain != "cfg" && domain != "motion" && domain != "rapid" {
+		return fmt.Errorf("invalid domain")
+	}
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/mastership/"+domain, nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "request")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+func (C *Client) ReleaseMastershipIndividual(domain string) error {
+	if domain == "" {
+		return fmt.Errorf("domain cannot be empty")
+	}
+	if domain != "cfg" && domain != "motion" && domain != "rapid" {
+		return fmt.Errorf("invalid domain")
+	}
+	C.Client = C.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+C.Host+"/rw/mastership/"+domain, nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "release")
+	req.URL.RawQuery = q.Encode()
+	resp, err := C.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
