@@ -249,6 +249,8 @@ func (c *Client) RequestMastershipIndividual(domain string) error {
 	return nil
 }
 
+// ReleaseMastershipIndividual releases mastership of a specific domain on the controller.
+// ie. CFG, Motion, RAPID, etc.
 func (C *Client) ReleaseMastershipIndividual(domain string) error {
 	if domain == "" {
 		return fmt.Errorf("domain cannot be empty")
