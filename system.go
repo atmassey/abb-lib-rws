@@ -176,3 +176,25 @@ func (c *Client) ResetAccumulatedEnergy() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// RequestMastership requests mastership of all domains on the controller.
+// ie. CFG, Motion, RAPID, etc.
+func (c *Client) RequestMastership() error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/mastership", nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "request")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
