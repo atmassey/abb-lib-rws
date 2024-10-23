@@ -282,6 +282,9 @@ func (c *Client) CreateDIPCQueue(name string, size uint16, max_msg_size uint16) 
 	if max_msg_size < 1 || max_msg_size > 444 {
 		return fmt.Errorf("max_msg_size must be between 1 and 444")
 	}
+	if size < 1 {
+		return fmt.Errorf("size must be greater than 0")
+	}
 	size_str := fmt.Sprintf("%d", size)
 	max_msg_size_str := fmt.Sprintf("%d", max_msg_size)
 	body := url.Values{}
