@@ -276,3 +276,33 @@ func (C *Client) ReleaseMastershipIndividual(domain string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// CreateDIPCQueue creates a DIPC queue on the controller with the specified name, size, and max message size.
+func (c *Client) CreateDIPCQueue(name string, size uint16, max_msg_size uint16) error {
+	if max_msg_size < 1 || max_msg_size > 444 {
+		return fmt.Errorf("max_msg_size must be between 1 and 444")
+	}
+	size_str := fmt.Sprintf("%d", size)
+	max_msg_size_str := fmt.Sprintf("%d", max_msg_size)
+	body := url.Values{}
+	body.Add("dipc-queue-name", name)
+	body.Add("dipc-queue-size", size_str)
+	body.Add("dipc-max-msg-size", max_msg_size_str)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/dipc", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "dipc-create")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
