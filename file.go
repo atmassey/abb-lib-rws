@@ -145,6 +145,7 @@ func (c *Client) RenameDirectory(OldPath string, NewName string) error {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	resp, err := c.Client.Do(req)
+	defer closeErrorCheck(resp.Body)
 	if err != nil {
 		return err
 	}

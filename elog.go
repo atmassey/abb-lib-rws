@@ -52,11 +52,12 @@ func (c *Client) getElogMessages(Endpoint string) (*structures.ElogMessagesXML, 
 	q.Add("lang", "en")
 	req.URL.RawQuery = q.Encode()
 	resp, err := c.Client.Do(req)
+	defer closeErrorCheck(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http status code: %v", err)
+		return nil, fmt.Errorf("http status code: %w", err)
 	}
 	messages_raw, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -113,12 +114,15 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer conn.Close()
 	go func() {
 		defer func() {
-			conn.Close()
 			close(returnChannel)
 		}()
-		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		err = conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		if err != nil {
+			return
+		}
 		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
 		for {
 			_, message, err := conn.ReadMessage()
