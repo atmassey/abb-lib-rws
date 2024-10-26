@@ -449,3 +449,30 @@ func (c *Client) Logout() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetSafetyMode will set the safety mode of the controller.
+// mode can be either "active", "service", or "commissioning"
+func (c *Client) SetSafetyMode(mode string) error {
+	if mode != "active" && mode != "service" && mode != "commissioning" {
+		return fmt.Errorf("invalid mode: %s", mode)
+	}
+	body := url.Values{}
+	body.Add("mode", mode)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/safety", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-mode")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
