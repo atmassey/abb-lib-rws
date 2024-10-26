@@ -1,9 +1,11 @@
 name: golangci-lint
-
 on:
-   push:
-     branches:
-       [main]
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   golangci:
@@ -14,7 +16,6 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: stable
-      - name: Download Linter Config
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
