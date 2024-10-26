@@ -8,5 +8,6 @@ linters:
       - funlen
       - noctx
       - gosmopolitan
+      - bodyclose
 run:
     timeout: 2m
