@@ -123,7 +123,12 @@ func (c *Client) SubscribeToElog() (chan map[string]string, error) {
 		if err != nil {
 			return
 		}
-		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
+		conn.SetPongHandler(func(string) error {
+			if err := conn.SetReadDeadline(time.Now().Add(60 * time.Second)); err != nil {
+				return err
+			}
+			return nil
+		})
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {

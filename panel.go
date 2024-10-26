@@ -146,8 +146,16 @@ func (c *Client) SubscribeToControllerState() (chan map[string]string, error) {
 			conn.Close()
 			close(returnChannel)
 		}()
-		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
-		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
+		err = conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		if err != nil {
+			return
+		}
+		conn.SetPongHandler(func(string) error {
+			if err := conn.SetReadDeadline(time.Now().Add(60 * time.Second)); err != nil {
+				return err
+			}
+			return nil
+		})
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {

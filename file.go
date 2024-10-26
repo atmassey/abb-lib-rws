@@ -214,6 +214,7 @@ func (c *Client) RenameFile(NewName string, Path string) error {
 	if err != nil {
 		return err
 	}
+	defer closeErrorCheck(resp.Body)
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}

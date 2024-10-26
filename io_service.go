@@ -117,6 +117,7 @@ func (c *Client) SubscribeToIOSignal(Signal string) (chan map[string]string, err
 	if err != nil {
 		return nil, err
 	}
+	defer conn.Close()
 	go func() {
 		defer func() {
 			conn.Close()
@@ -126,7 +127,12 @@ func (c *Client) SubscribeToIOSignal(Signal string) (chan map[string]string, err
 		if err != nil {
 			return
 		}
-		conn.SetPongHandler(func(string) error { conn.SetReadDeadline(time.Now().Add(60 * time.Second)); return nil })
+		conn.SetPongHandler(func(string) error {
+			if err := conn.SetReadDeadline(time.Now().Add(60 * time.Second)); err != nil {
+				return err
+			}
+			return nil
+		})
 		for {
 			_, message, err := conn.ReadMessage()
 			if err != nil {
