@@ -476,3 +476,24 @@ func (c *Client) SetSafetyMode(mode string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetVTSpeed will set the virtual time speed of the controller
+func (c *Client) SetVTSpeed(speed int) error {
+	speed_string := strconv.Itoa(speed)
+	body := url.Values{}
+	body.Add("vtspeed", speed_string)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/ctrl/virtualtime/vtspeed", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer closeErrorCheck(resp.Body)
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	return nil
+}
