@@ -153,3 +153,30 @@ func (c *Client) RemoteUserLogOutRequest() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+func (c *Client) RegisterUser(Username string, Application string, Location string, Locale bool) error {
+	body := url.Values{}
+	body.Add("username", Username)
+	body.Add("application", Application)
+	body.Add("location", Location)
+	if Locale {
+		body.Add("ulocale", "local")
+	} else {
+		body.Add("ulocale", "remote")
+	}
+	c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/users", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
