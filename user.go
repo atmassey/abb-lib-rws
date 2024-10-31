@@ -154,6 +154,9 @@ func (c *Client) RemoteUserLogOutRequest() error {
 	return nil
 }
 
+// RegisterUser is used to register a user.
+// If locale is true, the user is registered as a local user. If locale is false, the user is registered as a remote user.
+// The user is registered with the username, application and location specified in the request.
 func (c *Client) RegisterUser(Username string, Application string, Location string, Locale bool) error {
 	body := url.Values{}
 	body.Add("username", Username)
