@@ -7,6 +7,8 @@ import (
 	"net/url"
 )
 
+// SetCameraState sets the state of the camera to either run or standby.
+// Set state to true for run and false for standby.
 func (c *Client) SetCameraState(Name string, State bool) error {
 	body := url.Values{}
 	if State {
