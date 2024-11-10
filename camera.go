@@ -132,3 +132,27 @@ func (c *Client) RefreshCameras() error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetCameraDCHP sets camera to dhcp mode
+func (c *Client) SetCameraDHCP(CameraName string) error {
+	body := url.Values{}
+	body.Add("name", CameraName)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/ethernet", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-dhcp")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
