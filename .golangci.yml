@@ -2,7 +2,6 @@ linters:
     presets:
       - bugs
     disable:
-      - scopelint
       - rowserrcheck
       - sqlclosecheck
       - funlen
