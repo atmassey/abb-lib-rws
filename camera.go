@@ -182,3 +182,58 @@ func (c *Client) SetCameraDNS(CameraName string, Suffix string, Server string) e
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetUserCredentials sets the user credentials for the camera
+// Restart the controller after setting the credentials
+func (c *Client) SetCameraUserCredentials(CameraName string, Username string, Password string) error {
+	body := url.Values{}
+	body.Add("index", CameraName)
+	body.Add("user", Username)
+	body.Add("password", Password)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/vision", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-user-credential")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// SetCameraIP sets the IP settings for the camera
+// Restart the controller after setting the IP settings
+func (c *Client) SetCameraIP(CameraName string, IP string, Subnet string, Gateway string) error {
+	body := url.Values{}
+	body.Add("name", CameraName)
+	body.Add("address", IP)
+	body.Add("netmask", Subnet)
+	body.Add("gateway", Gateway)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/vision", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-ip-settings")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
