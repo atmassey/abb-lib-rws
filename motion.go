@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/atmassey/abb-lib-rws/structures"
 )
@@ -191,6 +192,33 @@ func (c *Client) SetPathSupervisionLevel(Level string, MechUnit string) error {
 	}
 	q := req.URL.Query()
 	q.Add("action", "set-level")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// SetNonMotionExecutionMode sets the non-motion execution mode
+func (c *Client) SetNonMotionExecutionMode(Mode string) error {
+	mode_buffered := strings.ToUpper(Mode)
+	if mode_buffered != "ON" && mode_buffered != "OFF" {
+		return fmt.Errorf("invalid mode: %s", Mode)
+	}
+	body := url.Values{}
+	body.Add("mode", Mode)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/nonmotionexecution", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-mode")
 	req.URL.RawQuery = q.Encode()
 	resp, err := c.Client.Do(req)
 	if err != nil {
