@@ -230,3 +230,56 @@ func (c *Client) SetNonMotionExecutionMode(Mode string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetComplianceLeadThrough sets the compliance lead through for a specific mechanical unit
+// Set Status to true to enable compliance lead through, false to disable
+func (c *Client) SetComplianceLeadThrough(Mechunit string, Status bool) error {
+	var status string
+	if Status {
+		status = "active"
+	} else {
+		status = "inactive"
+	}
+	body := url.Values{}
+	body.Add("status", status)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/mechunits/"+Mechunit, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-lead-through")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// SetFineCalibration sets the fine calibration for a specific mechanical unit
+func (c *Client) SetFineCalibration(Mechunit string, AxisValue int) error {
+	body := url.Values{}
+	body.Add("axis", fmt.Sprintf("%d", AxisValue))
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/mechunits/"+Mechunit, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "fine-calibrate")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
