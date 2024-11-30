@@ -196,3 +196,13 @@ type RobotTypeRobot struct {
 	Title     string   `xml:"title,attr"`
 	RobotType string   `xml:"span"`
 }
+
+type AxisPositon struct {
+	X  string
+	Y  string
+	Z  string
+	Q1 string
+	Q2 string
+	Q3 string
+	Q4 string
+}

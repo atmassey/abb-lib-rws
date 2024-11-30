@@ -283,3 +283,34 @@ func (c *Client) SetFineCalibration(Mechunit string, AxisValue int) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetAxisPose sets the axis pose for a specific mechanical unit
+func (c *Client) SetAxisPose(Mechunit string, Axisnum int, Positions structures.AxisPositon) error {
+	axis_string := fmt.Sprintf("%d", Axisnum)
+	body := url.Values{}
+	body.Add("axis", fmt.Sprintf("%d", Axisnum))
+	body.Add("x", Positions.X)
+	body.Add("y", Positions.Y)
+	body.Add("z", Positions.Z)
+	body.Add("q1", Positions.Q1)
+	body.Add("q2", Positions.Q2)
+	body.Add("q3", Positions.Q3)
+	body.Add("q4", Positions.Q4)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/mechunits/"+Mechunit+"/axes/"+axis_string, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "set-axispose")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
