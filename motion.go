@@ -314,3 +314,47 @@ func (c *Client) SetAxisPose(Mechunit string, Axisnum int, Positions structures.
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// SetSyncRevCounter will update the sync rev counter for a specific mechanical unit and axis
+func (c *Client) UpdateSyncRevCounter(Mechunit string, Axis string) error {
+	body := url.Values{}
+	body.Add("syncType", "1")
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/mechunits/"+Mechunit+"/axes/"+Axis, bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "update-syncrevcounter")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
+
+// UpdateCommutate will update the commutate for a specific mechanical unit and axis
+func (c *Client) UpdateCommutate(Mechunit string, Axis string) error {
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/motionsystem/mechunits/"+Mechunit+"/axes/"+Axis, nil)
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "update-commutate")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
