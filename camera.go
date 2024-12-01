@@ -2,9 +2,13 @@ package abb
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/atmassey/abb-lib-rws/structures"
 )
 
 // SetCameraState sets the state of the camera to either run or standby.
@@ -236,4 +240,29 @@ func (c *Client) SetCameraIP(CameraName string, IP string, Subnet string, Gatewa
 	}
 	defer closeErrorCheck(resp.Body)
 	return nil
+}
+
+func (c *Client) GetCameraStatus() (status map[string]string, err error) {
+	var status_struct structures.CameraStatusRaw
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/panel/panel_state", nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer closeErrorCheck(resp.Body)
+	status_raw, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = xml.Unmarshal(status_raw, &status_struct)
+	if err != nil {
+		return nil, err
+	}
+	status = make(map[string]string)
+	status["camera-status"] = status_struct.Body.Div.List[0].Span.Text
+	return status, nil
 }
