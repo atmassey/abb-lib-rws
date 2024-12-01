@@ -242,6 +242,7 @@ func (c *Client) SetCameraIP(CameraName string, IP string, Subnet string, Gatewa
 	return nil
 }
 
+// GetCameraStatus gets the status of the camera with the given name.
 func (c *Client) GetCameraStatus(Cameraname string) (status map[string]string, err error) {
 	var status_struct structures.CameraStatusRaw
 	c.Client = c.DigestAuthenticate()
