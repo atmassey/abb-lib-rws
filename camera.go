@@ -242,16 +242,22 @@ func (c *Client) SetCameraIP(CameraName string, IP string, Subnet string, Gatewa
 	return nil
 }
 
-func (c *Client) GetCameraStatus() (status map[string]string, err error) {
+func (c *Client) GetCameraStatus(Cameraname string) (status map[string]string, err error) {
 	var status_struct structures.CameraStatusRaw
 	c.Client = c.DigestAuthenticate()
-	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/panel/panel_state", nil)
+	req, err := http.NewRequest("GET", "http://"+c.Host+"/rw/vision", nil)
 	if err != nil {
 		return nil, err
 	}
+	q := req.URL.Query()
+	q.Add("name", Cameraname)
+	q.Add("resource", "camera-status")
 	resp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	defer closeErrorCheck(resp.Body)
 	status_raw, err := io.ReadAll(resp.Body)
