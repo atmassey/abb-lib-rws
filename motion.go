@@ -358,3 +358,39 @@ func (c *Client) UpdateCommutate(Mechunit string, Axis string) error {
 	defer closeErrorCheck(resp.Body)
 	return nil
 }
+
+// Modify position for all syncrhonized targets
+func (c *Client) SetModifyAllPostions(CheckLimit bool, CheckDeactAxes bool) error {
+	var axes, limit string
+	if CheckLimit {
+		limit = "true"
+	} else {
+		limit = "false"
+	}
+
+	if CheckDeactAxes {
+		axes = "true"
+	} else {
+		axes = "false"
+	}
+	body := url.Values{}
+	body.Add("checklimit", limit)
+	body.Add("checkdeactaxes", axes)
+	c.Client = c.DigestAuthenticate()
+	req, err := http.NewRequest("POST", "http://"+c.Host+"/rw/rapid/modules", bytes.NewBufferString(body.Encode()))
+	if err != nil {
+		return err
+	}
+	q := req.URL.Query()
+	q.Add("action", "modify-all-position")
+	req.URL.RawQuery = q.Encode()
+	resp, err := c.Client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP Status: %v", resp.StatusCode)
+	}
+	defer closeErrorCheck(resp.Body)
+	return nil
+}
