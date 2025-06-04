@@ -1,12 +1,50 @@
+version: "2"
 linters:
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - contextcheck
+    - durationcheck
+    - errchkjson
+    - errorlint
+    - exhaustive
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - gosec
+    - loggercheck
+    - makezero
+    - musttag
+    - nilerr
+    - nilnesserr
+    - protogetter
+    - reassign
+    - recvcheck
+    - spancheck
+    - testifylint
+    - zerologlint
+  disable:
+    - bodyclose
+    - funlen
+    - gosmopolitan
+    - noctx
+    - rowserrcheck
+    - sqlclosecheck
+  exclusions:
+    generated: lax
     presets:
-      - bugs
-    disable:
-      - rowserrcheck
-      - sqlclosecheck
-      - funlen
-      - noctx
-      - gosmopolitan
-      - bodyclose
-run:
-    timeout: 2m
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
