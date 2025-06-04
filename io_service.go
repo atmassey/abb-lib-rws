@@ -101,10 +101,13 @@ func (c *Client) SubscribeToIOSignal(Signal string) (chan map[string]string, err
 	header := resp.Cookies()
 	var session, session_ab string
 	for _, c := range header {
-		if c.Name == "-http-session-" {
+		switch c.Name {
+		case "-http-session-":
 			session = c.Value
-		} else if c.Name == "ABBCX" {
+		case "ABBCX":
 			session_ab = c.Value
+		default:
+			continue
 		}
 	}
 	requestHeader := http.Header{}
